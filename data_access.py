@@ -52,7 +52,7 @@ def get_token(news_id):
     query = "SELECT *  FROM recsys.news_token WHERE news_id = %s" % news_id
     conn = None
     cur = None
-    rows = None
+    row = None
     try:
         conn = get_connection()
         cur = get_dict_cursor(conn)
@@ -63,13 +63,13 @@ def get_token(news_id):
     finally:
         free_connection(conn, cur)
     return row
-    
+
 
 def get_news(news_id):
     query = "SELECT * FROM news.news_resource WHERE newsId = %s" % news_id
     conn = None
     cur = None
-    rows = None
+    row = None
     try:
         conn = get_connection()
         cur = get_dict_cursor(conn)
@@ -81,9 +81,12 @@ def get_news(news_id):
         free_connection(conn, cur)
     return row
 
-# if __name__ == '__main__':
-    row = get_news(20180704113527485)
-    print(row)
-    # print(row["url"])
+if __name__ == '__main__':
+    # id = ""
+    # row = get_news(20180704113527485)
+
     row = get_token(20180704113527485)
-    print(row)
+    print(row.keys())
+    # print(get_news()["newsId"])
+
+

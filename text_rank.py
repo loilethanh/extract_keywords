@@ -13,7 +13,7 @@ import numpy.linalg as LA
 start = 0
 limit = 2
 
-file = open('textrank.txt', 'w')
+file = open('result/textrank.txt', 'w')
 # file_sum = open('summarys.txt', 'w')
 file_path = "data/data_news_soha.csv"
 
@@ -23,10 +23,8 @@ def getData():
     with open(file_path) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            content =''
-            id = row['newsId']
-            dict = {'id':id}
-            content += row['title_token'] +" "+ row['sapo_token'] + " " + row['content_token']
+            dict = {'id':row['newsId']}
+            content = row['title_token'].lower() +" "+ row['sapo_token'].lower()+ " " + row['content_token'].lower()
             dict_content = {"content" : content}
             dict.update(dict_content)
             data.append(dict)
@@ -91,9 +89,9 @@ def textRank(data) :
             if not wo in stopwords:
                 filter_sentence += wo + " "
 
-        key = keywords.keywords(filter_sentence ,scores=True )
-        file.write(str(d['id'])+" "+str(key)+"\n")
-        print(d['id'], key ,"\n")
+        key = keywords.keywords(filter_sentence ,scores=False ).split("\n")
+        file.write(str(d['id'])+" "+str(key))
+        # print(d['id'], key ,"\n")
         keywords_textrank.append({'id':d['id'],'keywords':key})
     return keywords_textrank
 

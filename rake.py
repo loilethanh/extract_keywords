@@ -27,7 +27,7 @@ from collections import Counter
 from data_access import *
 debug = False
 test = False
-# file_path = "data/data_news_soha_1000.csv"
+file_path = "data/data_news_soha.csv"
 
 
 def is_number(s):
@@ -39,48 +39,58 @@ def is_number(s):
 
 
 def load_stop_words(stop_word_file):
-    """
-    Utility function to load stop words from a file and return as a list of words
-    @param stop_word_file Path and file name of a file containing stop words.
-    @return list A list of stop words.
-    """
     stop_words = []
     for line in open(stop_word_file):
         if line.strip()[0:1] != "#":
             for word in line.split():  # in case more than one per line
                 stop_words.append(word)
-
-    # print(stop_words)
     return stop_words
 
 
 def load_postag (id):
+    # data_postag = []
+    #
+    # row  = get_token(id)
+    #
+    # content =row['title_postag']+" "+row['sapo_postag']+" "+row['content_postag']
+    #
+    # content_postag ={}
+    # word_tokens = word_tokenize(content)
+    # for word in word_tokens :
+    #     w = ''
+    #     postag = ''
+    #     for i in range(len(word)):
+    #         if word[i] == "/" :
+    #             w = word[:i].lower()
+    #             postag = word[i+1:]
+    #
+    #             break
+    #
+    #     content_postag.update({w:postag})
+    # data_postag.append({'id':id,'content_postag':content_postag})
     data_postag = []
-    row  = get_token(id)
-    content =row['title_postag']+" "+row['sapo_postag']+" "+row['content_postag']
-
-    content_postag ={}
-    word_tokens = word_tokenize(content)
-    for word in word_tokens :
-        w = ''
-        postag = ''
-        for i in range(len(word)):
-            if word[i] == "/" :
-                w = word[:i].lower()
-                postag = word[i+1:]
-
-                break
-
-        content_postag.update({w:postag})
-    data_postag.append({'id':id,'content_postag':content_postag})
+    with open(file_path) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            id = row['newsId']
+            content = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
+            content_postag = {}
+            word_tokens = word_tokenize(content)
+            for word in word_tokens:
+                w = ''
+                postag = ''
+                for i in range(len(word)):
+                    if word[i] == "/":
+                        w = word[:i].lower()
+                        postag = word[i + 1:]
+                        break
+                content_postag.update({w: postag})
+            data_postag.append({'id': id, 'content_postag': content_postag})
     return data_postag
-
 
 def loadStopwords(stop_path,id):
     data_pos = load_postag(id)
-
-    # pos = ['A','B','C','Cc','I','T','X','Z','R','M','CH','E','L','p']
-    pos = ['C', 'Cc', 'M', 'A', 'E', 'M', 'R',  'T', 'X']
+    pos = ['C', 'Cc','M', 'E', 'R',  'T', 'X', 'A']
     stop_words = []
     for x in open(stop_path).read().split('\n'):
         d = ''
@@ -95,9 +105,7 @@ def loadStopwords(stop_path,id):
 
     for doc in data_pos :
         for w in doc['content_postag'] :
-
             if(doc['content_postag'][w] in pos ) :
-
                 stop_words.append(w)
 
     return stop_words

@@ -13,7 +13,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 tokenizer = RegexpTokenizer(r'\w+')
 file_path = "data/data_news_soha.csv"
 
-start = 0
 limit = 1000
 
 def getData():
@@ -21,13 +20,12 @@ def getData():
     with open(file_path) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            content = ''
             dict = {'id': row['newsId']}
-            content += row['title_token'] + " " + row['sapo_token'] + " " + row['content_token']
+            content = row['title_token'].lower() + " " + row['sapo_token'].lower() + " " + row['content_token'].lower()
             dict_content = {"content": content}
             dict.update(dict_content)
             data.append(dict)
-    return data[start:limit]
+    return data[0:limit]
 
 
 def load_postag ():
@@ -35,9 +33,8 @@ def load_postag ():
     with open(file_path) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in  reader :
-            content = ''
             id = row['newsId']
-            content +=row['title_postag']+" "+row['sapo_postag']+" "+row['content_postag']
+            content =row['title_postag']+" "+row['sapo_postag']+" "+row['content_postag']
             content_postag ={}
             word_tokens = word_tokenize(content)
             for word in word_tokens :
@@ -54,15 +51,13 @@ def load_postag ():
 
 def loadStopwords():
     data_pos = load_postag()
-    # pos = ['A','B','C','Cc','I','T','X','Z','R','M','CH','E','L','p']
     pos = ['C', 'Cc', 'M', 'A', 'E', 'M', 'R', 'T', 'X']
     stop_words = []
     for x in open('data/stoplists/vietnamese-stopwords.txt', 'r').read().split('\n'):
         d = ''
         w = x.split(" ")
         if len(w)== 1 :
-            for i in range(len(w)) :
-                stop_words.append(w[i])
+            stop_words.append(w[0])
         else :
             for i in range(len(w)-1) :
                 d+=w[i]+"_"
@@ -73,34 +68,27 @@ def loadStopwords():
         for w in d['content_postag'] :
             if(d['content_postag'][w] in pos ) :
                 stop_words.append(w)
-    # print(stop_words)
     return stop_words
 
 
-doc_set = getData()
-stop_words = loadStopwords()
+def run():
+    doc_set = getData()
+    stop_words = loadStopwords()
 
-texts = []
-#
-for d in doc_set:
-    d = d['content']
-    raw = d.lower()
-    tokens = tokenizer.tokenize(raw)
-    stopped_tokens = []
-    for w in tokens:
-        word = w
-        for i in range(len(w)):
-            if (w[i] == "_"):
-                word = w[:i] + " " + w[i + 1:]
-        if not word in stop_words:
-            if (len(word) > 2):
-                stopped_tokens.append(w)
-    texts.append(stopped_tokens)
-#
-# print(texts)
+    texts = []
+    #
+    for d in doc_set:
+        tokens = tokenizer.tokenize(d['content'])
+        stopped_tokens = [w for w in tokens if w not in stop_words]
+        texts.append(stopped_tokens)
+    #
+    # print(texts)
 
-model = gensim.models.Word2Vec(texts, min_count=1)
-model.save("model.w2v")
-# model = gensim.models.Word2Vec.load("model.w2v")
-# vector = model.most_similar("ý_kiến".split())
-# print(vector)
+    # model = gensim.models.Word2Vec(texts, min_count=1)
+    # model.save("model.w2v")
+    model = gensim.models.Word2Vec.load("model.w2v")
+    # vector = model.most_similar(positive=['woman', 'king'], negative=['man'], topn=1)
+    vector = model.similarity("minh_beo")
+    print(vector)
+if __name__ == '__main__':
+    run()
