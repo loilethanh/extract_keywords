@@ -27,7 +27,7 @@ from collections import Counter
 from data_access import *
 debug = False
 test = False
-file_path = "data/data_news_soha.csv"
+# file_path = "data/data_news_soha.csv"
 
 
 def is_number(s):
@@ -48,49 +48,26 @@ def load_stop_words(stop_word_file):
 
 
 def load_postag (id):
-    # data_postag = []
-    #
-    # row  = get_token(id)
-    #
-    # content =row['title_postag']+" "+row['sapo_postag']+" "+row['content_postag']
-    #
-    # content_postag ={}
-    # word_tokens = word_tokenize(content)
-    # for word in word_tokens :
-    #     w = ''
-    #     postag = ''
-    #     for i in range(len(word)):
-    #         if word[i] == "/" :
-    #             w = word[:i].lower()
-    #             postag = word[i+1:]
-    #
-    #             break
-    #
-    #     content_postag.update({w:postag})
-    # data_postag.append({'id':id,'content_postag':content_postag})
     data_postag = []
-    with open(file_path) as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            id = row['newsId']
-            content = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
-            content_postag = {}
-            word_tokens = word_tokenize(content)
-            for word in word_tokens:
-                w = ''
-                postag = ''
-                for i in range(len(word)):
-                    if word[i] == "/":
-                        w = word[:i].lower()
-                        postag = word[i + 1:]
-                        break
-                content_postag.update({w: postag})
-            data_postag.append({'id': id, 'content_postag': content_postag})
+    row  = get_token(id)
+    content =str(row['title_postag'])+" "+str(row['sapo_postag'])+" "+str(row['content_postag'])
+    content_postag ={}
+    word_tokens = word_tokenize(content)
+    for word in word_tokens :
+        w = ''
+        postag = ''
+        for i in range(len(word)):
+            if word[-i] == "/":
+                w = word[-len(word):-i].lower()
+                postag = word[-i + 1:]
+                break
+        content_postag.update({w:postag})
+    data_postag.append({'id':id,'content_postag':content_postag})
     return data_postag
 
-def loadStopwords(stop_path,id):
+def load_stopwords(stop_path, id):
     data_pos = load_postag(id)
-    pos = ['C', 'Cc','M', 'E', 'R',  'T', 'X', 'A']
+    pos = ['Nu','Ny', 'C', 'Cc','A','M', 'E', 'R',  'T', 'X']
     stop_words = []
     for x in open(stop_path).read().split('\n'):
         d = ''
@@ -316,7 +293,7 @@ class Rake(object):
     def run(self, stop_words_path, text ,id ):
 
         self.__stop_words_path = stop_words_path
-        self.__stop_words_list = loadStopwords(stop_words_path, id)  ## vietnamese
+        self.__stop_words_list = load_stopwords(stop_words_path, id)  ## vietnamese
         sentence_list = split_sentences(text)
 
         stop_words_pattern = build_stop_word_regex(self.__stop_words_list)

@@ -80,13 +80,13 @@ def get_news(news_id):
     finally:
         free_connection(conn, cur)
     return row
-
-if __name__ == '__main__':
-    # id = ""
+#
+# if __name__ == '__main__':
+#     id = ""
     # row = get_news(20180704113527485)
 
-    row = get_token(20180704113527485)
-    print(row.keys())
+    # row = get_token(20180617093030)
+    # print(row.keys())
     # print(get_news()["newsId"])
 
 
