@@ -11,11 +11,11 @@ def get(id):
     print(result, title, link)
     return jsonify({'id':id,'title':title, 'link':link, 'keyword': result})
 
-@application.route("/new/<id>")
+# @application.route("/new/<id>")
 
-def getnew(id):
-    news = get_new(id)
-    return jsonify(news)
+# def getnew(id):
+#     news = get_new(id)
+#     return jsonify(news)
 
 
 if __name__ == "__main__":

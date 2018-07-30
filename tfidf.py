@@ -8,11 +8,13 @@ import math
 from data_access  import *
 
 from sklearn.feature_extraction.text import TfidfVectorizer
+import pickle
+
 
 tokenizer = RegexpTokenizer(r'\w+')
-file_path = "data/data_news_soha_10000.csv"
-file_write = "result/tf-idf_ngram_10000"
-limit = 10000
+file_path = "data/data_news_soha.csv"
+file_write = "result/tf-idf.txt"
+# limit = 1000
 
 def norm (numbers) :
     a = math.sqrt(numbers)
@@ -25,10 +27,9 @@ def getData():
         reader = csv.DictReader(csvfile)
         for row in reader:
             dict = {'id':str(row['newsId']) ,
-                    'title': str(row['title_token']).lower() + " " + str(row['sapo_token']).lower(),
-                    "content": str(row['content_token']).lower()}
+                    'title': str(row['title_token']).lower() ,
+                    "content":  str(row['sapo_token']).lower() + " " + str(row['content_token']).lower()}
             data.append(dict)
-
 
             content_pos = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
             content_postag = {}
@@ -44,30 +45,26 @@ def getData():
                 content_postag.update({w: postag})
             data_postag.append({'id': id, 'content_postag': content_postag})
 
-    return data[0:limit],data_postag[0:limit]
+    return data ,data_postag
 
 
-# def load_postag ():
-#     data_postag = []
-#     with open(file_path) as csvfile:
-#         reader = csv.DictReader(csvfile)
-#         for row in  reader :
-#             id = str(row['newsId'])
-#             content =str(row['title_postag'])+" "+str(row['sapo_postag'])+" "+str(row['content_postag'])
-#             content_postag ={}
-#             word_tokens = word_tokenize(content)
-#             for word in word_tokens :
-#                 w = ''
-#                 postag = ''
-#                 for i in range(len(word)):
-#                     if word[-i] == "/" :
-#                         w = word[-len(word):-i].lower()
-#                         postag = word[-i+1:]
-#                         break
-#                 content_postag.update({w:postag})
-#             data_postag.append({'id':id,'content_postag':content_postag})
-#
-#     return data_postag[0:limit]
+def load_postag (id):
+    data_postag = []
+    row = get_token(id)
+    content = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
+    content_postag = {}
+    word_tokens = word_tokenize(content)
+    for word in word_tokens:
+        w = ''
+        postag = ''
+        for i in range(len(word)):
+            if word[-i] == "/":
+                w = word[-len(word):-i].lower()
+                postag = word[-i + 1:]
+                break
+        content_postag.update({w: postag})
+    data_postag.append({'id': id, 'content_postag': content_postag})
+    return data_postag
 
 
 def load_stopwords(data_pos):
@@ -90,6 +87,7 @@ def load_stopwords(data_pos):
                 stop_words.append(w)
     return stop_words
 
+#### gensim
 
 # def run() :
 #     doc_set = getData()
@@ -144,7 +142,7 @@ def get_corpus(doc_set,stop_words):
     return  texts
 
 
-def run_ngram():
+def run_ngram(option_write = False, save_option= False ):
     doc_set,data_pos = getData()
     stop_words = load_stopwords(data_pos)
     texts = get_corpus(doc_set,stop_words)
@@ -167,20 +165,25 @@ def run_ngram():
         res.sort(key=lambda x: x[1], reverse=True)
         result.append(res)
 
-    write_file(doc_set, result)
+    if option_write == True:
+        write_file(doc_set, result)
+
+    if save_option == True :
+        with open('vectorizer.pk', 'wb') as f:
+            pickle.dump(model, f)
 
 
 def get_tf_idf(id) :
-
-    doc_set = getData()
-    stop_words = load_stopwords()
-    texts = get_corpus(doc_set, stop_words)
+    # doc_set = getData()
+    data_postag = load_postag(id)
+    stop_words = load_stopwords(data_postag)
+    # texts = get_corpus(doc_set, stop_words)
 
     row = get_token(id)
     title = row['title_token'].lower()
-    content = title + " " + row['sapo_token'].lower() + " " + row['content_token'].lower()
+    content =row['sapo_token'].lower() + " " + row['content_token'].lower()
 
-    tokens = tokenizer.tokenize(content)
+    tokens = tokenizer.tokenize(title+content)
     stopped_tokens = [word for word in tokens if not word in stop_words]
     string = ''
     for word in stopped_tokens:
@@ -188,11 +191,16 @@ def get_tf_idf(id) :
 
     str = [string]
 
-    model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words)
+    # model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words)
+
+
     # model.fit(texts)
 
+    with open('vectorizer.json', 'rb') as fin:
+        model = pickle.load(fin)
 
-    tfidf_matrix = model.fit_transform(str)
+
+    tfidf_matrix = model.transform(str)
 
     feature_names = model.get_feature_names()
     feature_index = tfidf_matrix.nonzero()[1]
@@ -201,11 +209,11 @@ def get_tf_idf(id) :
     result = []
     for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
         # print(w, s)
-        if w in (row['title_token'].lower()+row['sapo_token'].lower()) :
-            result.append((w, s * norm(len(row['title_token']+row['sapo_token']))))
-        if ((w in row['content_token']) and (w not in row['title_token']) and (
-                norm(len(row['content_token'])) != 0)):
-            result.append((w, s * norm(len(['content_token']))))
+        if w in (title) :
+            result.append((w, s * norm(len(title))))
+
+        if ((w in content) and (w not in title) and (norm(len(content)) != 0)):
+            result.append((w, s * norm(len(content))))
 
     result.sort(key=lambda x: x[1], reverse=True)
     # print(result)
@@ -213,12 +221,10 @@ def get_tf_idf(id) :
     return result
 
 
-
-
 if __name__=="__main__" :
     start = time.time()
-    # run_ngram()
-    # get_tf_idf(20180725011933491)
+    # run_ngram(option_write=False, save_option=True)
+    get_tf_idf(20161222173627577)
 
     print("--- %s seconds ---" % (time.time() - start))
     # run()
