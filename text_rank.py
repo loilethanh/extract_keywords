@@ -13,7 +13,7 @@ import numpy.linalg as LA
 start = 0
 limit = 2
 
-file = open('result/textrank.txt', 'w')
+# file = open('result/textrank.txt', 'w')
 # file_sum = open('summarys.txt', 'w')
 file_path = "data/data_news_soha.csv"
 
@@ -88,10 +88,9 @@ def textRank(data) :
             wo = w.lower()
             if not wo in stopwords:
                 filter_sentence += wo + " "
-
         key = keywords.keywords(filter_sentence ,scores=False ).split("\n")
-        file.write(str(d['id'])+" "+str(key))
-        # print(d['id'], key ,"\n")
+        # file.write(str(d['id'])+" "+str(key))
+        print(d['id'], key ,"\n")
         keywords_textrank.append({'id':d['id'],'keywords':key})
     return keywords_textrank
 

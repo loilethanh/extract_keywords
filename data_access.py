@@ -80,11 +80,29 @@ def get_news(news_id):
     finally:
         free_connection(conn, cur)
     return row
+
+def get_all_id():
+    query = "SELECT newsId FROM news.news_resource WHERE  sourceNews = 'Soha' ORDER BY publishDate DESC LIMIT 10"
+    conn = None
+    cur = None
+    row = None
+    try:
+        conn = get_connection()
+        cur = get_dict_cursor(conn)
+        cur.execute(query)
+        row = cur.fetchone()
+    except Exception as e:
+        print (e)
+    finally:
+        free_connection(conn, cur)
+    return row
+
 #
-# if __name__ == '__main__':
+if __name__ == '__main__':
 # #     id = ""
-#     # row = get_news(20180704113527485)
-#
+#     row = get_news(20180704113527485)
+    row = get_all_id()
+    print(row)
 #     row = get_token(20180617093030)
 #     print(row.keys())
     # print(get_news()["newsId"])

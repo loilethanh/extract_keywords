@@ -29,12 +29,12 @@ def load_stop_words(stop_word_file):
     return stop_words
 
 
-def load_postag (id):
+def load_postag (content_pos):
     data_postag = []
-    row  = get_token(id)
-    content =str(row['title_postag'])+" "+str(row['sapo_postag'])+" "+str(row['content_postag'])
+    # row  = get_token(id)
+    # content =str(row['title_postag'])+" "+str(row['sapo_postag'])+" "+str(row['content_postag'])
     content_postag ={}
-    word_tokens = word_tokenize(content)
+    word_tokens = word_tokenize(content_pos)
     for word in word_tokens :
         w = ''
         postag = ''
@@ -44,12 +44,13 @@ def load_postag (id):
                 postag = word[-i + 1:]
                 break
         content_postag.update({w:postag})
-    data_postag.append({'id':id,'content_postag':content_postag})
+    data_postag.append(content_postag)
     return data_postag
 
-def load_stopwords(stop_path, id):
-    data_pos = load_postag(id)
-    pos = ['Nu','Ny', 'C', 'Cc','A','M', 'E', 'R',  'T', 'X']
+def load_stopwords(stop_path,content_pos):
+    data_pos = load_postag(content_pos)
+    # pos = ['Nu','Ny', 'C', 'Cc','A','M', 'E', 'R',  'T', 'X']
+    pos=["C","Cc","T",'X','E','R','A',]
     stop_words = []
     for x in open(stop_path).read().split('\n'):
         d = ''
@@ -63,8 +64,8 @@ def load_stopwords(stop_path, id):
             stop_words.append(d)
 
     for doc in data_pos :
-        for w in doc['content_postag'] :
-            if(doc['content_postag'][w] in pos ) :
+        for w in doc:
+            if(doc[w] in pos ) :
                 stop_words.append(w)
 
     return stop_words
@@ -272,10 +273,10 @@ class Rake(object):
         self.__max_words_length_adj = max_words_length_adj
         self.__min_phrase_freq_adj = min_phrase_freq_adj
 
-    def run(self, stop_words_path, text ,id ):
+    def run(self, stop_words_path, text , content_pos ):
 
         self.__stop_words_path = stop_words_path
-        self.__stop_words_list = load_stopwords(stop_words_path, id)  ## vietnamese
+        self.__stop_words_list = load_stopwords(stop_words_path,content_pos)  ## vietnamese
         sentence_list = split_sentences(text)
 
         stop_words_pattern = build_stop_word_regex(self.__stop_words_list)

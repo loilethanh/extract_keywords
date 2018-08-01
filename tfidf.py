@@ -12,9 +12,21 @@ import pickle
 
 
 tokenizer = RegexpTokenizer(r'\w+')
-file_path = "data/data_news_soha.csv"
+file_path = "data/data_news_soha_10000.csv"
 file_write = "result/tf-idf.txt"
+file_model ="result/vectorizer.pk"
 # limit = 1000
+
+def load_model():
+    start = time.time()
+    with open(file_model, 'rb') as f:
+        model = pickle.load(f)
+    print("load model", time.time() - start)
+    start= time.time()
+    feature_names = model.get_feature_names()
+    print("load feature_names", time.time() - start)
+
+    return model,feature_names
 
 def norm (numbers) :
     a = math.sqrt(numbers)
@@ -48,27 +60,30 @@ def getData():
     return data ,data_postag
 
 
-def load_postag (id):
-    data_postag = []
-    row = get_token(id)
-    content = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
-    content_postag = {}
-    word_tokens = word_tokenize(content)
-    for word in word_tokens:
-        w = ''
-        postag = ''
-        for i in range(len(word)):
-            if word[-i] == "/":
-                w = word[-len(word):-i].lower()
-                postag = word[-i + 1:]
-                break
-        content_postag.update({w: postag})
-    data_postag.append({'id': id, 'content_postag': content_postag})
-    return data_postag
+# def load_postag_tfidf (id):
+#     data_postag = []
+#     row = get_token(id)
+#     content = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
+#     content_postag = {}
+#     word_tokens = word_tokenize(content)
+#     for word in word_tokens:
+#         w = ''
+#         postag = ''
+#         for i in range(len(word)):
+#             if word[-i] == "/":
+#                 w = word[-len(word):-i].lower()
+#                 postag = word[-i + 1:]
+#                 break
+#         content_postag.update({w: postag})
+#     data_postag.append({'id': id, 'content_postag': content_postag})
+#     return data_postag
 
 
-def load_stopwords(data_pos):
-    pos = ['C', 'Cc','A','M', 'E', 'R',  'T', 'X']
+def load_stopwords():
+    # pos = ['C', 'Cc','A','M', 'E', 'R',  'T', 'X']
+    # pos=['C', 'Cc','E','T', 'X']
+    # pos=["C","Cc","T",'X','E','R',"M"]
+    # pos=[]
     stop_words = []
     for x in open('data/stoplists/vietnamese-stopwords.txt', 'r').read().split('\n'):
         d = ''
@@ -81,14 +96,14 @@ def load_stopwords(data_pos):
             d+=w[len(w)-1]
             stop_words.append(d)
 
-    for d in data_pos :
-        for w in d['content_postag'] :
-            if(d['content_postag'][w] in pos ) :
-                stop_words.append(w)
+    # for d in data_pos :
+    #     for w in d['content_postag'] :
+    #         if(d['content_postag'][w] in pos ) :
+    #             stop_words.append(w)
     return stop_words
 
-#### gensim
-
+  #gensim
+#
 # def run() :
 #     doc_set = getData()
 #     stop_words = load_stopwords()
@@ -144,10 +159,10 @@ def get_corpus(doc_set,stop_words):
 
 def run_ngram(option_write = False, save_option= False ):
     doc_set,data_pos = getData()
-    stop_words = load_stopwords(data_pos)
+    stop_words = load_stopwords()
     texts = get_corpus(doc_set,stop_words)
 
-    model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words)
+    model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words,min_df=3)
     tfidf_matrix = model.fit_transform(texts)
     feature_names = model.get_feature_names()
     result = []
@@ -169,63 +184,74 @@ def run_ngram(option_write = False, save_option= False ):
         write_file(doc_set, result)
 
     if save_option == True :
-        with open('vectorizer.pk', 'wb') as f:
+        with open('vectorizer3.pk', 'wb') as f:
             pickle.dump(model, f)
 
 
-def get_tf_idf(id) :
+def get_tf_idf(id, model ,feature_names) :
     # doc_set = getData()
-    data_postag = load_postag(id)
-    stop_words = load_stopwords(data_postag)
-    # texts = get_corpus(doc_set, stop_words)
+    # data_postag = load_postag_tfidf(id)
+    start = time.time()
+    stop_words = load_stopwords()
+    print("stopword :", time.time() - start)
 
+    start = time.time()
     row = get_token(id)
     title = row['title_token'].lower()
     content =row['sapo_token'].lower() + " " + row['content_token'].lower()
+    print("get data :", time.time() - start)
 
+    start = time.time()
     tokens = tokenizer.tokenize(title+content)
     stopped_tokens = [word for word in tokens if not word in stop_words]
     string = ''
     for word in stopped_tokens:
         string += word + " "
-
     str = [string]
-
-    # model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words)
-
-
-    # model.fit(texts)
-
-    with open('vectorizer.json', 'rb') as fin:
-        model = pickle.load(fin)
+    print("tokenize :", time.time() - start)
 
 
+    print("vocab size: ", len(model.vocabulary_))
+    # model.
+    start = time.time()
     tfidf_matrix = model.transform(str)
+    print("Time transform: ", time.time() - start)
 
-    feature_names = model.get_feature_names()
+    start = time.time()
+    # print(feature_names)
+    print("get feature name : ", time.time() - start)
+
+    start = time.time()
     feature_index = tfidf_matrix.nonzero()[1]
     tfidf_scores = zip(feature_index, [tfidf_matrix[0, x] for x in feature_index])
+    print("get score : ", time.time() - start)
 
     result = []
+
+    start = time.time()
     for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
-        # print(w, s)
+        print(w, s)
         if w in (title) :
             result.append((w, s * norm(len(title))))
 
         if ((w in content) and (w not in title) and (norm(len(content)) != 0)):
             result.append((w, s * norm(len(content))))
+    print("cal :", time.time() - start)
 
+    start = time.time()
     result.sort(key=lambda x: x[1], reverse=True)
-    # print(result)
+    print("sort", time.time() - start)
+
+    print("tfidf",result)
 
     return result
 
 
 if __name__=="__main__" :
     start = time.time()
+    model,feature_names = load_model()
     # run_ngram(option_write=False, save_option=True)
-    get_tf_idf(20161222173627577)
-
+    get_tf_idf(20180731122004553,model,feature_names)
     print("--- %s seconds ---" % (time.time() - start))
     # run()
     # getData()

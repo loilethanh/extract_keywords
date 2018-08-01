@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from rake_vn import *
+from rake_run import *
 application = Flask(__name__)
 
 
@@ -7,7 +7,7 @@ application = Flask(__name__)
 @application.route("/<id>")
 
 def get(id):
-    result , title, link = run_api(id)
+    result , title, link = run_api(id,model,feature_names)
     print(result, title, link)
     return jsonify({'id':id,'title':title, 'link':link, 'keyword': result})
 
@@ -19,4 +19,5 @@ def get(id):
 
 
 if __name__ == "__main__":
+    model,feature_names = load_model()
     application.run(host="0.0.0.0", port=9001)
