@@ -1,6 +1,5 @@
 *.pyc
 data
 result
-model.lda*
-model.w2v
+models
 

@@ -1,25 +1,25 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from nltk.tokenize import word_tokenize
-from rake import *
-from tfidf import *
+from src.rake import *
+from src.tfidf import *
 import csv
-from data_access  import *
-import rake, time
-import rake_v2
+from src.data_access  import *
+import src.rake, time
+
 
 
 threshold = 5
 # tf_idf_file = './result/tf-idf_ngram.txt'
 file_path = "data/data_news_soha_10000.csv"
 stoppath = "data/stoplists/vietnamese-stopwords.txt"
-file_ = 'result/rake_ngram.txt'
-file_model = 'result/vectorizer.pk'
+file_ = 'models/rake_ngram.txt'
+file_model = 'models/vectorizer.pk'
 
 
 def run_rake(stop_path,text,content) :
 
-    rake_object = rake.Rake(5,3,2)
+    rake_object = Rake(5,3,2)
     keywords = rake_object.run(stop_path,text = text,content_pos= content)
     return keywords
 
@@ -125,7 +125,7 @@ def get_tfidf_(aid, model,feature_names) :
 # check tag in the content of news
 def check_tag_postag(tags,tag_token, content):
     check = ['Np', 'Nb']
-    # print("tags",tags)
+    print("tag_news :",tags)
     tag_pos = tags.split(" ")
 
     # print("tag_token",tag_token)
@@ -140,14 +140,15 @@ def check_tag_postag(tags,tag_token, content):
         postag = ''
         for i in range(len(t)):
             if t[-i] == "/":
-                w = t[-len(t):-i].lower()
+                w = t[-len(t):-i].lower().strip()
+                # print(w)
                 postag = t[-i + 1:]
                 break
         if (postag in check and w in tokens and w not in result ):
             for tokenizer in tokenizer_tag :
                 token = tokenizer.split(" ")
-                if w in token and tokenizer not in result :
-                    result.append(tokenizer)
+                if w in token and tokenizer.strip() not in result :
+                    result.append(tokenizer.strip())
                     break
     # print("tag",result)
     return  result
@@ -155,39 +156,44 @@ def check_tag_postag(tags,tag_token, content):
 
 #check PoS of keyword
 def check_keyword(result,content_PoS):
-    pos = ["V"]
+    pos = ["V",'VV','NVV','NpVV','NV','NpV']
     data_pos = load_postag(content_PoS)
     print("data_pos",data_pos)
-    tag = []
+    tags = []
     for r in result :
-        tag.append(r[0])
-    print("keyword ", tag)
+        tags.append(r[0].strip())
+    print("keyword ", tags)
 
-    for re in tag :
-        # print(re.split(" "))
-        if(len(re.split(" ")) == 1) :
-            print(re)
+    for tag in tags :
+        token = tag.split(" ")
+        PoS = ''
+        for w in token :
+            print(w,data_pos.get(w))
+            PoS += data_pos.get(w)
+        print(tag,PoS)
+        if( PoS in pos ) :
+            print("remove",tag,PoS)
+            tags.remove(tag)
 
-
-
+    print("keyword",tags)
     if len(result) >= threshold :
         thr = threshold
     else: thr = len(result)
-    tag = tag[:thr]
+    tags = tags[:thr]
 
 
-    return tag
+    return tags
 
 
 def run_api(id,model,feature_names) :
     content, title, link,tags,tag_token,content_PoS = get_content_id(id)
-    tag_postag = []
+    tag_news = []
     if (tags != None):
-        tag_postag = check_tag_postag(tags,tag_token, content)
+        tag_news = check_tag_postag(tags,tag_token, content)
     result= []
     keys = run_rake(stoppath, content,content_PoS)
     tf_idf = get_tfidf_(id, model, feature_names)
-    print("keys:", keys)
+    print("gen_keys:", keys)
     for i in range(len(keys)):
         w = keys.__getitem__(i)
         print(w)
@@ -200,7 +206,7 @@ def run_api(id,model,feature_names) :
     result.sort(key=lambda x: x[1], reverse=True)
 
     result = check_keyword(result, content_PoS)
-    check = [tg for tg in tag_postag if tg not in result]
+    check = [tg for tg in tag_news if tg not in result]
     print("check", check)
     result = result + check
     print("result ", result)
@@ -238,7 +244,7 @@ def run_api(id,model,feature_names) :
 if __name__ == '__main__' :
     start = time.time()
     model,feature_names = load_model()
-    id = "20180802155615178"
+    id = "20180803062326115"
     # content, title, link,tags,tag_token,content_PoS = get_content_id(id)
     # check_tag_postag(tags,tag_token,content)
     run_api(id,model,feature_names)
