@@ -230,7 +230,6 @@ def get_tf_idf(id, model ,feature_names) :
 
     start = time.time()
     for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
-        print(w, s)
         if w in (title) :
             result.append((w, s * norm(len(title))))
 
@@ -242,7 +241,7 @@ def get_tf_idf(id, model ,feature_names) :
     result.sort(key=lambda x: x[1], reverse=True)
     print("sort", time.time() - start)
 
-    print("tfidf",result)
+    # print("tfidf",result)
 
     return result
 
