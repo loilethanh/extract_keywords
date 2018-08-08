@@ -8,7 +8,8 @@ import six,csv
 from nltk.tokenize import word_tokenize
 from six.moves import range
 from collections import Counter
-# from data_access import *
+from src.tfidf import *
+from src.data_access import *
 debug = False
 test = False
 
@@ -49,8 +50,8 @@ def load_postag (content_pos):
 
 def load_stopwords(stop_path,content_pos):
     data_pos = load_postag(content_pos)
-    # pos = ['Nu','Ny', 'C', 'Cc','A','M', 'E', 'R',  'T', 'X']
-    pos=['Nu','Ny',"C","Cc","T",'X','E','R','A',]
+    # pos = ['Nu','Ny', 'C', 'Cc','A','M', 'E', 'R', 'T', 'X']
+    pos = ['Nu', 'Ny', "C", "Cc", "T", 'X','E', 'R','Z']
     stop_words = []
     for x in open(stop_path).read().split('\n'):
         d = ''

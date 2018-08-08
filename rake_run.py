@@ -10,104 +10,65 @@ import src.rake, time
 
 
 threshold = 5
-# tf_idf_file = './result/tf-idf_ngram.txt'
 file_path = "data/data_news_soha_10000.csv"
 stoppath = "data/stoplists/vietnamese-stopwords.txt"
-file_ = 'models/rake_ngram.txt'
+file_rake = 'models/rake_10000.txt'
 file_model = 'models/vectorizer.pk'
 
 
-def run_rake(stop_path,text,content) :
-
-    rake_object = Rake(5,3,2)
+def run_rake(stop_path,text,content,min_freq) :
+    """
+    run alogrithm RAKE with
+    :param stop_path:
+    :param text:
+    :param content:
+    :param min_freq:
+    :return: keywords
+    """
+    rake_object = Rake(5,3,min_phrase_freq_adj=min_freq)
     keywords = rake_object.run(stop_path,text = text,content_pos= content)
     return keywords
 
-# def get_all_data():
-#     data = []
-#     with open(file_path) as csvfile:
-#         reader = csv.DictReader(csvfile)
-#         for row in reader:
-#             dict = {'id':str(row['newsId'])}
-#             content = str(row['title_token']).lower() + " "+ str(row['sapo_token']).lower() +" "+str(row['content_token']).lower()
-#             dict_content = {"content" : content}
-#             dict.update(dict_content)
-#             data.append(dict)
-#     return data[3:10]
-#
-# #
-# def load_all_tfidf() :
-#     word_tfidf = []
-#     with open(tf_idf_file) as fp:
-#         for row in range(0,limit) :
-#             line = fp.readline().split(",")
-#             word_tfidf.append(line)
-#     return word_tfidf
-# #
-# def write_file(id, option , result):
-#     file = open(file_, 'w')
-#     file.write(str(id) + ",")
-#     if option:
-#         for r in result:
-#             file.write(str(r[0]) + ":" + str(r[1]) + ",")
-#     else :
-#         for r in result:
-#             file.write(str(r[0])+",")
-#     file.write("\n")
-#
-# #
-#
-# def run(model,feature_names):
-#     file = open(file_, 'w')
-#     with open(file_path) as csvfile:
-#         reader = csv.DictReader(csvfile)
-#         for row in reader:
-#
-#             file.write(str(row['newsId']) + ",")
-#             id= str(row['newsId'])
-#             content, title, link, tags, content_PoS = get_content_id(id)
-#             tag_postag = []
-#             if (tags != None) :
-#                 tag_postag = check_tag_postag(tags, content)
-#
-#             result = []
-#             keys = run_rake(stoppath, content, content_PoS)
-#             # print("key", keys)
-#             # tf_idf = get_tfidf_(id, model, feature_names)
-#             # print("keys:", keys)
-#             # for i in range(len(keys)):
-#             #     w = keys.__getitem__(i)
-#                 # print(w)
-#                 # for j in range(len(tf_idf)):
-#                 #     sub = tf_idf[j].split(":")
-#                 #     if w[0] == sub[0]:
-#                         # print(sub[1])
-#                         # result.append((w[0], float(w[1]) * float(sub[1])))
-#                 # print("\n")
-#             result.sort(key=lambda x: x[1], reverse=True)
-#             result = check_keyword(result, content_PoS)
-#             check = [tg for tg in tag_postag if tg not in result]
-#             # print("check", check)
-#             result = result + check
-#             file.write(str(result[:]))
-#             file.write("\n")
-#             # print("result ", result)
+#########################################################################
+def run_all_data(model, feature_name):
+    """
+    :param model:
+    :param feature_name:
+    :return: get keyword for file_path and write in file
+    """
+    file = open(file_rake, 'w')
+    with open(file_path) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            id = row['newsId']
+            result,title,link = run_api(id,model,feature_name)
+            write_file(id,file,result)
 
 
+def write_file(id, file, result):
+    file.write(str(id) + ",")
+    for r in result:
+        file.write(str(r)+",")
+    file.write("\n")
 
-#######################################################################
+
+########################################################################
 
 
-def get_content_id(aid):
-
+def get_content(aid):
+    """
+    get content, title, link, tag from MYSQL with aid
+    :param aid:
+    :return:
+    """
     row = get_token(aid)
     title = str(row['title_token']).lower()
     link = get_news(aid)['url']
     content = title + " " + row['sapo_token'].lower() + " " + row['content_token'].lower()
     tag = row["tag_postag"]
-    tag_token   = row['tag_token'].lower()
+    tag_token   = row['tag_token']
     content_PoS = str(row['title_postag'])+" "+str(row['sapo_postag'])+" "+str(row['content_postag'])
-    print("title postag :", row["title_postag"])
+    print(aid, "title postag :", row["title_postag"])
 
 
     return content,title,link,tag,tag_token,content_PoS
@@ -116,17 +77,18 @@ def get_content_id(aid):
 def get_tfidf_(aid, model,feature_names) :
     word_tfidf = []
     tfidf = get_tf_idf(aid, model,feature_names)
-    for d in tfidf:
+    for d in tfidf :
         word_tfidf.append(str(d[0]) + ":" + str(d[1]))
-
     return word_tfidf
 
 
-# check tag in the content of news
-def check_tag_postag(tags,tag_token, content):
-    check = ['Np', 'Nb']
-    print("tag_news :",tags)
-    tag_pos = tags.split(" ")
+
+def check_tag_postag(tag_pos,tag_token, content):
+    """ check tag in the content of news """
+
+    check = ['Np']
+    print("tag_news :",tag_pos)
+    tags_pos = tag_pos.split(" ")
 
     # print("tag_token",tag_token)
     tokenizer_tag = tag_token.split(";")
@@ -135,7 +97,7 @@ def check_tag_postag(tags,tag_token, content):
     tokens = word_tokenize(content)
     result = []
 
-    for t in tag_pos:
+    for t in tags_pos:
         w = ''
         postag = ''
         for i in range(len(t)):
@@ -144,113 +106,119 @@ def check_tag_postag(tags,tag_token, content):
                 # print(w)
                 postag = t[-i + 1:]
                 break
-        if (postag in check and w in tokens and w not in result ):
+        if (postag in check and w in tokens ):
             for tokenizer in tokenizer_tag :
                 token = tokenizer.split(" ")
                 if w in token and tokenizer.strip() not in result :
                     result.append(tokenizer.strip())
                     break
-    # print("tag",result)
+    print("tag",result)
     return  result
 
 
-#check PoS of keyword
 def check_keyword(result,content_PoS):
-    pos = ["V",'VV','NVV','NpVV','NV','NpV']
+    """Check postag of keyword generated """
+
+    # pos = ["V",'VV','NVV','NNV','NpVV','NV','NpV','VNV','N','VVb']
+    pos = ["V",'VV','NpVV','VNV','NV','VN','NpV','VVb','Nb']
+    pos_word =['N','M','R','Nb','V']
     data_pos = load_postag(content_PoS)
-    print("data_pos",data_pos)
+    # print("data_pos",data_pos)
     tags = []
+    tags_remove = []
     for r in result :
         tags.append(r[0].strip())
-    print("keyword ", tags)
+    print("keyword_sort ",len(tags) ,tags)
 
-    for tag in tags :
-        token = tag.split(" ")
-        PoS = ''
-        for w in token :
-            print(w,data_pos.get(w))
-            PoS += data_pos.get(w)
-        print(tag,PoS)
-        if( PoS in pos ) :
-            print("remove",tag,PoS)
-            tags.remove(tag)
+    for i in range(len(tags)) :
+        token = tags[i].split(" ")
+        if len(token) == 1 and len(token[0].split("_")) == 1 :
+            PoS = data_pos.get(token[0])
+            print(i," ",token," ",PoS)
 
-    print("keyword",tags)
+            if PoS in pos_word :
+                print("----------remove---------", tags[i], PoS)
+                tags_remove.append(token[0])
+        else :
+            print(i, " ", token)
+            PoS = ''
+            for w in token:
+                if (data_pos.get(w)):
+                    print(w)
+                    print(w, data_pos.get(w))
+                    PoS += data_pos.get(w)
+            print(tags[i], PoS)
+            if (PoS in pos):
+                print("----------remove---------", tags[i], PoS)
+                tags_remove.append(tags[i])
+    tags_final =[tg for tg in tags if tg not in tags_remove]
+    print("remove :",len(tags_remove),"keyword",len(tags_final),tags_final)
     if len(result) >= threshold :
         thr = threshold
     else: thr = len(result)
-    tags = tags[:thr]
+    tags_final = tags_final[:thr]
 
 
-    return tags
+    return tags_final
 
 
 def run_api(id,model,feature_names) :
-    content, title, link,tags,tag_token,content_PoS = get_content_id(id)
+    min_freq = 2
+    result = []
+    content, title, link,tags,tag_token,content_PoS = get_content(id)
+
+    keys = run_rake(stoppath, content, content_PoS,min_freq)
+    print("gen_keys_2:",len(keys), keys)
+    if len(keys) < 4:
+        min_freq = 1
+        keys = run_rake(stoppath, content, content_PoS, min_freq)
+        print("gen_keys_1:", keys)
+    if keys != None :
+        tf_idf = get_tfidf_(id, model, feature_names)
+        for i in range(len(keys)):
+            w = keys.__getitem__(i)
+            print(w)
+            for j in range(len(tf_idf)):
+                sub = tf_idf[j].split(":")
+                if w[0] == sub[0]:
+                    print(sub[1])
+                    result.append((w[0], float(w[1]) * float(sub[1])))
+            print("\n")
+        result.sort(key=lambda x: x[1], reverse=True)
+
     tag_news = []
-    if (tags != None):
+    if (tags != None and tag_token != None):
+        tag_token = tag_token.lower()
         tag_news = check_tag_postag(tags,tag_token, content)
-    result= []
-    keys = run_rake(stoppath, content,content_PoS)
-    tf_idf = get_tfidf_(id, model, feature_names)
-    print("gen_keys:", keys)
-    for i in range(len(keys)):
-        w = keys.__getitem__(i)
-        print(w)
-        for j in range(len(tf_idf)):
-            sub = tf_idf[j].split(":")
-            if w[0] == sub[0]:
-                print(sub[1])
-                result.append((w[0], float(w[1]) * float(sub[1])))
-        print("\n")
-    result.sort(key=lambda x: x[1], reverse=True)
+    if tag_news == None and keys == None :
+        tag_news = tag_token.lower().split(";")
 
     result = check_keyword(result, content_PoS)
     check = [tg for tg in tag_news if tg not in result]
+
+    check_coincident = []
+    for re in result :
+        for tg in check :
+            if re in tg :
+                check_coincident.append(re)
+                break
+    print("coincident :",check_coincident)
+    result =[re for re in result if re not in check_coincident]
+    # for tag in result :
+    #     if tag
     print("check", check)
-    result = result + check
+    result = check + result
     print("result ", result)
 
     return  result , title, link
 
-# def get_new(aid):
-#     tags_news, title, link  = run_api(aid)
-#     print(tags_news)
-#     news=[]
-#     # news_ids=[]
-#
-#     with open('rake.txt') as fp:
-#         for row in range(0,limit) :
-#             line = fp.readline().split(":")
-#
-#             # news_ids.append(line[0])
-#             # news_tag, new_title, new_link = get_content_Id(line[0])
-#             news_tag = line[1]
-#             # print(news_tag)
-#             # new_title = get_token(line[0])
-#             # new_link = get_news(line[0])['url']
-#             result = {}
-#             #
-#             join = [t for t in tags_news if t in news_tag]
-#             if len(join) > 0:
-#             #     # print(news_ids[row], ":", join)
-#             #     result.update({"id": line[0],"title":new_title,"link": new_link,"keyword" : join})
-#                 result.update({"id": line[0],"keyword" : join})
-#                 print(result)
-#                 news.append(result)
-#
-#     return news
 
 if __name__ == '__main__' :
     start = time.time()
-    model,feature_names = load_model()
-    id = "20180803062326115"
-    # content, title, link,tags,tag_token,content_PoS = get_content_id(id)
-    # check_tag_postag(tags,tag_token,content)
-    run_api(id,model,feature_names)
-    # run(model,feature_names)
-    # check_keyword(id,[])
-
+    model,feature_names = load_model(file_model)
+    # id = "20180719152741876"
+    # run_api(id,model,feature_names)
+    run_all_data(model,feature_names)
     print("--- %s seconds ---" % (time.time() - start))
 
 
