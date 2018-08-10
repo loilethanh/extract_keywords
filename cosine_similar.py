@@ -12,7 +12,7 @@ def get_news_tags(aid, model, feature_name):
     print("tags :",tags_news)
     news=[]
     with open(file_rake) as fp:
-        for row in range(0,1000) :
+        for row in range(0,10000) :
             line = fp.readline().split(",")
             news_tag = line[1:]
             result = {}
@@ -51,10 +51,13 @@ def get_news_similar_score(id, model, feature_name):
 
 if __name__ == '__main__':
 
-    id = "20180720072721908"
-    models, feature_names = load_model(file_model)
-    # # news = get_new(id, models,feature_names)
-    get_news_similar_score(id, models, feature_names)
+    # id = "20180720072721908"
+    # models, feature_names = load_model(file_model)
+    # # # # news = get_new(id, models,feature_names)
+    # get_news_similar_score(id, models, feature_names)
+    token = 'ham_doi'
+    str = '_'
+    print(str in  token)
 
 
 

@@ -48,27 +48,25 @@ def load_postag (content_pos):
     # data_postag.append(content_postag)
     return content_postag
 
-def load_stopwords(stop_path,content_pos):
+def load_stopwords(stop_path,content_pos,pos):
     data_pos = load_postag(content_pos)
     # pos = ['Nu','Ny', 'C', 'Cc','A','M', 'E', 'R', 'T', 'X']
-    pos = ['Nu', 'Ny', "C", "Cc", "T", 'X','E', 'R','Z']
     stop_words = []
-    for x in open(stop_path).read().split('\n'):
-        d = ''
-        w = x.split(" ")
-        if len(w) == 1:
-            stop_words.append(w[0])
-        else:
-            for i in range(len(w) - 1):
-                d += w[i] + "_"
-            d += w[len(w) - 1]
-            stop_words.append(d)
-
+    # for x in open(stop_path).read().split('\n'):
+    #     d = ''
+    #     w = x.split(" ")
+    #     if len(w) == 1:
+    #         stop_words.append(w[0])
+    #     else:
+    #         for i in range(len(w) - 1):
+    #             d += w[i] + "_"
+    #         d += w[len(w) - 1]
+    #         stop_words.append(d)
 
     for w in data_pos:
         if(data_pos[w] in pos ) :
             stop_words.append(w)
-
+    print("stopwords",stop_words)
     return stop_words
 
 
@@ -274,10 +272,10 @@ class Rake(object):
         self.__max_words_length_adj = max_words_length_adj
         self.__min_phrase_freq_adj = min_phrase_freq_adj
 
-    def run(self, stop_words_path, text , content_pos ):
+    def run(self, stop_words_path, text , content_pos ,pos):
 
         self.__stop_words_path = stop_words_path
-        self.__stop_words_list = load_stopwords(stop_words_path,content_pos)  ## vietnamese
+        self.__stop_words_list = load_stopwords(stop_words_path,content_pos,pos)  ## vietnamese
         sentence_list = split_sentences(text)
 
         stop_words_pattern = build_stop_word_regex(self.__stop_words_list)

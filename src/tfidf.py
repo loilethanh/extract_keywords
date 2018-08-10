@@ -10,10 +10,10 @@ import pickle
 
 
 tokenizer = RegexpTokenizer(r'\w+')
-file_path = "../data/data_news_soha.csv"
-file_write = "models/tf-idf.txt"
+file_path = "../data/data_news_soha_10000.csv"
+# file_write = "models/tf-idf.txt"
 file_model ="../models/vectorizer.pk"
-file_stopwords = 'data/stoplists/vietnamese-stopwords.txt'
+file_stopwords = '../data/stoplists/vietnamese-stopwords.txt'
 # limit = 1000
 
 def load_model(file):
@@ -54,19 +54,20 @@ def getData():
                         postag = word[-i + 1:]
                         break
                 content_postag.update({w: postag})
-            data_postag.append({'id': id, 'content_postag': content_postag})
+            data_postag.append({'id': str(row['newsId']), 'content_postag': content_postag})
 
     return data ,data_postag
 
 
 
-def load_stopwords_tfidf():
+def load_stopwords_tfidf(file):
     # pos = ['C', 'Cc','A','M', 'E', 'R',  'T', 'X']
     # pos=['C', 'Cc','E','T', 'X']
     # pos=["C","Cc","T",'X','E','R',"M"]
     # pos=[]
+    # pos = ['Nu', 'Ny', "C", "Cc", "T", 'X', 'E', 'R', 'Z']
     stop_words = []
-    for x in open(file_stopwords, 'r').read().split('\n'):
+    for x in open(file, 'r').read().split('\n'):
         d = ''
         w = x.split(" ")
         if len(w)== 1 :
@@ -78,6 +79,7 @@ def load_stopwords_tfidf():
             stop_words.append(d)
 
     # for d in data_pos :
+    #     print(d['id'])
     #     for w in d['content_postag'] :
     #         if(d['content_postag'][w] in pos ) :
     #             stop_words.append(w)
@@ -99,7 +101,7 @@ def get_corpus(doc_set,stop_words):
 
 def run_ngram(save_option= False ):
     doc_set,data_pos = getData()
-    stop_words = load_stopwords_tfidf()
+    stop_words = load_stopwords_tfidf(file_stopwords)
     texts = get_corpus(doc_set,stop_words)
 
     model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words,min_df=1)
@@ -125,11 +127,11 @@ def run_ngram(save_option= False ):
             pickle.dump(model, f)
 
 
-def get_tf_idf(id, model ,feature_names) :
+def get_tf_idf(id,file, model ,feature_names) :
     # doc_set = getData()
     # data_postag = load_postag_tfidf(id)
     # start = time.time()
-    stop_words = load_stopwords_tfidf()
+    stop_words = load_stopwords_tfidf(file)
     # print("stopword :", time.time() - start)
 
     # start = time.time()
@@ -185,9 +187,9 @@ def get_tf_idf(id, model ,feature_names) :
 #
 if __name__=="__main__" :
     start = time.time()
-    model,feature_names = load_model(file_model)
+    # model,feature_names = load_model(file_model)
     # run_ngram(save_option=True)
-    get_tf_idf(20180731122004553,model,feature_names)
+    # get_tf_idf(20180731122004553,model,feature_names)
     print("--- %s seconds ---" % (time.time() - start))
     # run()
     # getData()
