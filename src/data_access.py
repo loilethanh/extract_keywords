@@ -1,10 +1,10 @@
 from pymysql import connect
 from pymysql import cursors
 
-HOST = "192.168.23.191"
+HOST = ""
 DB_NAME = "news"
-USER_NAME = "recommender"
-PASSWORD = "lga5QenoQEuksNy"
+USER_NAME = ""
+PASSWORD = ""
 
 def get_connection():
     conn = connect(host=HOST, user=USER_NAME, passwd=PASSWORD, db=DB_NAME, charset='utf8')
