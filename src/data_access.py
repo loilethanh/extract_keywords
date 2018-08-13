@@ -2,7 +2,7 @@ from pymysql import connect
 from pymysql import cursors
 
 HOST = ""
-DB_NAME = "news"
+DB_NAME = ""
 USER_NAME = ""
 PASSWORD = ""
 
