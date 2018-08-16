@@ -42,7 +42,7 @@ def load_postag (content_pos):
         for i in range(len(word)):
             if word[-i] == "/":
                 w = word[-len(word):-i].lower()
-                postag = word[-i + 1:]
+                postag = word[-i + 1:].strip()
                 break
         content_postag.update({w:postag})
     # data_postag.append(content_postag)
@@ -50,23 +50,22 @@ def load_postag (content_pos):
 
 def load_stopwords(stop_path,content_pos,pos):
     data_pos = load_postag(content_pos)
-    # pos = ['Nu','Ny', 'C', 'Cc','A','M', 'E', 'R', 'T', 'X']
     stop_words = []
-    # for x in open(stop_path).read().split('\n'):
-    #     d = ''
-    #     w = x.split(" ")
-    #     if len(w) == 1:
-    #         stop_words.append(w[0])
-    #     else:
-    #         for i in range(len(w) - 1):
-    #             d += w[i] + "_"
-    #         d += w[len(w) - 1]
-    #         stop_words.append(d)
+    for x in open(stop_path).read().split('\n'):
+        d = ''
+        w = x.split(" ")
+        if len(w) == 1:
+            stop_words.append(w[0])
+        else:
+            for i in range(len(w) - 1):
+                d += w[i] + "_"
+            d += w[len(w) - 1]
+            stop_words.append(d)
 
     for w in data_pos:
         if(data_pos[w] in pos ) :
             stop_words.append(w)
-    print("stopwords",stop_words)
+    # print("stopwords",stop_words)
     return stop_words
 
 
@@ -293,39 +292,38 @@ class Rake(object):
         return sorted_keywords
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     text = "Compatibility of systems of linear constraints over the set of natural numbers. " \
-#            "Criteria of compatibility of a system of linear Diophantine equations, strict inequations," \
-#            " and nonstrict inequations are considered. Upper bounds for components of a minimal set of" \
-#            " solutions and algorithms of construction of minimal generating sets of solutions for all types" \
-#            " of systems are given. These criteria and the corresponding algorithms for constructing a minimal" \
-#            " supporting set of solutions can be used in solving all the considered types of systems and systems " \
-#            "of mixed types."
-#
-#     # # Split text into sentences
-#     sentenceList = split_sentences(text)
-#     stoppath = "FoxStoplist.txt" #Fox stoplist contains "numbers", so it will not find "natural numbers" like in Table 1.1
-#     stoppath = "data/stoplists/SmartStoplist.txt"  # SMART stoplist misses some of the lower-scoring keywords in Figure 1.5, which means that the top 1/3 cuts off one of the 4.0 score words in Table 1.1
-#     stopwordpattern = build_stop_word_regex(stoppath)
-#
-#     # generate candidate keywords
-#     phraseList = generate_candidate_keywords(sentenceList, stopwordpattern, load_stop_words(stoppath))
-#
-#     # calculate individual word scores
-#     wordscores = calculate_word_scores(phraseList)
-#
-#     # generate candidate keyword scores
-#     keywordcandidates = generate_candidate_keyword_scores(phraseList, wordscores)
-#     if debug: print(keywordcandidates)
-#
-#     sortedKeywords = sorted(six.iteritems(keywordcandidates), key=operator.itemgetter(1), reverse=True)
-#     if debug: print(sortedKeywords)
-#
-#     totalKeywords = len(sortedKeywords)
-#     if debug: print(totalKeywords)
-#     print(sortedKeywords[0:(totalKeywords // 3)])
-#     #
-#     rake = Rake("data/stoplists/SmartStoplist.txt")
-#     keywords = rake.run(text)
-#     print(keywords)
+    text = "Tâm trạng xấu có thể khiến tim bạn đập nhanh hơn " \
+           "và huyết áp của bạn tăng lên." \
+           " Khi người già bị chấn thương tinh thần nghiêm trọng, " \
+           "có sự tức giận, lo lắng, hận thù và cảm xúc khác, " \
+           "nó có thể gây ra sự gia tăng huyết áp đột ngột," \
+           " dữ dội có thể dẫn đến đột quỵ, suy tim," \
+           " bệnh tim mạch vành, nhồi máu cơ tim, đột tử."
+
+    # # Split text into sentences
+    sentenceList = split_sentences(text)
+    # stoppath = "FoxStoplist.txt" #Fox stoplist contains "numbers", so it will not find "natural numbers" like in Table 1.1
+    stoppath = "../data/stoplists/vietnamese-stopwords.txt"  # SMART stoplist misses some of the lower-scoring keywords in Figure 1.5, which means that the top 1/3 cuts off one of the 4.0 score words in Table 1.1
+    stopwordpattern = build_stop_word_regex(stoppath)
+
+    # generate candidate keywords
+    phraseList = generate_candidate_keywords(sentenceList, stopwordpattern, load_stop_words(stoppath))
+    print(phraseList)
+    # calculate individual word scores
+    wordscores = calculate_word_scores(phraseList)
+
+    # generate candidate keyword scores
+    keywordcandidates = generate_candidate_keyword_scores(phraseList, wordscores)
+    if debug: print(keywordcandidates)
+    sortedKeywords = sorted(six.iteritems(keywordcandidates), key=operator.itemgetter(1), reverse=True)
+    if debug: print(sortedKeywords)
+
+    totalKeywords = len(sortedKeywords)
+    if debug: print(totalKeywords)
+    print(sortedKeywords[0:(totalKeywords // 3)])
+    #
+    # rake = Rake(5,3,2)
+    # keywords = rake.run(stoppath,text,[],[])
+    # print(keywords)

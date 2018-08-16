@@ -3,61 +3,78 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from rake_run import *
 from src.data_access import *
 from src.tfidf import *
+import time
+import datetime
 
 
 file_model = 'models/vectorizer.pk'
+# file = "models/rake_test.txt"
+
 
 def get_news_tags(aid, model, feature_name):
     tags_news, title, link  = run_api(aid, model, feature_name)
-    print("tags :",tags_news)
     news=[]
-    with open(file_rake) as fp:
-        for row in range(0,10000) :
-            line = fp.readline().split(",")
-            news_tag = line[1:]
-            result = {}
-            coincident = [t for t in tags_news if t in news_tag]
-            if len(coincident)>0 and str(aid) != str(line[0]):
-            #     # print(news_ids[row], ":", join)
-                titles = get_news(line[0])['title']
-                links = get_news(line[0])['url']
-                result.update({"id": line[0],"title":titles,"link": links,"keyword_join" : coincident})
-            #     result.update({"id": line[0],"keyword" : join})
-                print(result)
-                news.append(result)
+    start = time.time()
+    candidate_news = get_tags_limit_30day()
+    print("time get news date %s ",time.time() - start, len(candidate_news))
+
+    start = time.time()
+    for cn  in candidate_news :
+        news_tag = cn['tags']
+        result = {}
+        intersect = [t for t in tags_news if t in news_tag]
+        if len(intersect) > 0 and str(aid) != str(cn['newsId']):
+            result.update({"id": cn['newsId'], "keyword_join": intersect})
+            news.append(result)
+    print("time get news tag %s ",time.time() - start)
+    print("news" , len(news) )
     return news
 
 
-
 def get_news_similar_score(id, model, feature_name):
-    news = get_news_tags(id, model, feature_name)
+    start = time.time()
     row = get_token(id)
     content = row['title_token'].lower() + row['sapo_token'].lower() + " " + row['content_token'].lower()
-    tfidf = model.transform([content])
-    # print(tfidf)
+    print("time get content %s ", time.time() - start)
+    start = time.time()
+    news = get_news_tags(id, model, feature_name)
+    print("time get news tag total %s ", time.time() - start)
     result = []
-    for doc in news :
-        row = get_token(doc['id'])
-        content = row['title_token'].lower() + row['sapo_token'].lower() + " " + row['content_token'].lower()
-        tf_idf = model.transform([content])
-        # print(tf_idf)
-        cosine = cosine_similarity(tfidf,tf_idf)
-        # print(cosine)
-        result.append((doc['id'],cosine[0][0],doc['title'],doc['link'],doc['keyword_join']))
-        result.sort(key=lambda x: x[1], reverse=True)
 
-    print(result)
+    if len(news) != 0:
+        list_ids = []
+        for n in news:
+            list_ids.append(n['id'])
+        start = time.time()
+        list_content = get_tags_list(list_ids)
+        print("time get list content %s ", time.time() - start)
+
+        tfidf = model.transform([content])
+
+        print("list_content :", list_content)
+
+        for doc in list_content:
+            contents = str(doc['title_token']).lower() + " " + str(doc['sapo_token']).lower() + " " + str(
+                doc["content_token"]).lower()
+            tf_idf = model.transform([contents])
+            # # print(tf_idf)
+            cosine = cosine_similarity(tfidf, tf_idf)
+            print(cosine)
+            result.append((doc['news_id'], cosine[0][0], doc['title'], doc['url']))
+            # result.append((doc['id'],cosine[0][0],doc['keyword_join']))
+            #
+            result.sort(key=lambda x: x[1], reverse=True)
+    # print(result)
     return result
 
 if __name__ == '__main__':
 
-    # id = "20180720072721908"
-    # models, feature_names = load_model(file_model)
-    # # # # news = get_new(id, models,feature_names)
-    # get_news_similar_score(id, models, feature_names)
-    token = 'ham_doi'
-    str = '_'
-    print(str in  token)
+    id = "20180618101927423"
+    models, feature_names = load_model(file_model)
+    # news = get_news_tags(id, models,feature_names)
+    start = time.time()
+    get_news_similar_score(id, models, feature_names)
+    print("times total :", time.time() - start)
 
 
 
