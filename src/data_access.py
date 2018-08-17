@@ -52,40 +52,38 @@ def free_connection(conn, cur):
         pass
     
 
-# def get_token(news_id):
-#     query = "SELECT recsys.news_token.title_token," \
-#             "recsys.news_token.sapo_token, recsys.news_token.content_token " \
-#             "FROM recsys.news_token WHERE news_id = %s" % news_id
-#     conn = None
-#     cur = None
-#     row = None
-#     try:
-#         conn = get_connection()
-#         cur = get_dict_cursor(conn)
-#         cur.execute(query)
-#         row = cur.fetchone()
-#     except Exception as e:
-#         print (e)
-#     finally:
-#         free_connection(conn, cur)
-#     return row
-#
-#
-# def get_news(news_id):
-#     query = "SELECT * FROM news.news_resource WHERE newsId = %s" % news_id
-#     conn = None
-#     cur = None
-#     row = None
-#     try:
-#         conn = get_connection()
-#         cur = get_dict_cursor(conn)
-#         cur.execute(query)
-#         row = cur.fetchone()
-#     except Exception as e :
-#         print (e)
-#     finally:
-#         free_connection(conn, cur)
-#     return row
+def get_token(news_id):
+    query = "SELECT * FROM recsys.news_token WHERE news_id = %s" % news_id
+    conn = None
+    cur = None
+    row = None
+    try:
+        conn = get_connection()
+        cur = get_dict_cursor(conn)
+        cur.execute(query)
+        row = cur.fetchone()
+    except Exception as e:
+        print (e)
+    finally:
+        free_connection(conn, cur)
+    return row
+
+
+def get_news(news_id):
+    query = "SELECT * FROM news.news_resource WHERE newsId = %s" % news_id
+    conn = None
+    cur = None
+    row = None
+    try:
+        conn = get_connection()
+        cur = get_dict_cursor(conn)
+        cur.execute(query)
+        row = cur.fetchone()
+    except Exception as e :
+        print (e)
+    finally:
+        free_connection(conn, cur)
+    return row
 
 # def get_news_update():
 #     query = """SELECT * FROM news.news_resource
@@ -104,22 +102,6 @@ def free_connection(conn, cur):
 #         free_connection(conn, cur)
 #     return row
 
-
-# def get_tags_all():
-#     query = "SELECT * FROM recsys.tag_extractor_2"
-#     conn = None
-#     cur = None
-#     row = None
-#     try:
-#         conn = get_connection()
-#         cur = get_dict_cursor(conn)
-#         cur.execute(query)
-#         row = cur.fetchall()
-#     except Exception as e:
-#         print (e)
-#     finally:
-#         free_connection(conn, cur)
-#     return row
 
 def get_news_list(list) :
     query = "SELECT recsys.news_token.news_id ,recsys.news_token.sapo_token," \
@@ -171,7 +153,35 @@ def get_new(id) :
         free_connection(conn, cur)
     return row
 
-def get_tags_limit_30day():
+def get_new_nearly(last_day) :
+    query = "SELECT recsys.news_token.news_id ,recsys.news_token.sapo_token," \
+            "recsys.news_token.content_token , recsys.news_token.title_token," \
+            "recsys.news_token.tag_token,recsys.news_token.tag_postag," \
+            "recsys.news_token.title_postag, recsys.news_token.sapo_postag," \
+            "recsys.news_token.content_postag," \
+            "news.news_resource.title, news.news_resource.url" \
+            " FROM recsys.news_token " \
+            " INNER JOIN news.news_resource ON  news.news_resource.newsId = recsys.news_token.news_id" \
+            " WHERE news.news_resource.publishDate >= '%s'" \
+            "LIMIT 10" %last_day
+
+    print(query)
+    conn = None
+    cur = None
+    row = None
+    try:
+        conn = get_connection()
+        cur = get_dict_cursor(conn)
+        cur.execute(query)
+        row = cur.fetchall()
+    except Exception as e:
+        print(e)
+    finally:
+        free_connection(conn, cur)
+    return row
+
+
+def get_tags_limit_day():
     query = """SELECT * FROM recsys.tag_extractor_2
                 WHERE `publishDate` >= NOW() - INTERVAL 30 DAY
                 AND `publishDate`  < NOW();"""
@@ -189,6 +199,21 @@ def get_tags_limit_30day():
         free_connection(conn, cur)
     return row
 
+def get_last_day():
+    query = """SELECT MAX(publishDate) as last_date FROM recsys.tag_extractor_2"""
+    conn = None
+    cur = None
+    row = None
+    try:
+        conn = get_connection()
+        cur = get_dict_cursor(conn)
+        cur.execute(query)
+        row = cur.fetchone()
+    except Exception as e:
+        print (e)
+    finally:
+        free_connection(conn, cur)
+    return row
 
 def insert(id ,updateTime, publishTime,tags) :
 
@@ -243,7 +268,11 @@ def insert(id ,updateTime, publishTime,tags) :
 
 if __name__ == '__main__':
 #     list =["20180815110622475"]
-    row = get_tags_limit_30day()
+    row = get_last_day()
     print(row)
+    date = row['last_date']
+    print(date)
+    row = get_new_nearly(date)
+    print(row[0])
 
 

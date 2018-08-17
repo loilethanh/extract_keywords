@@ -42,29 +42,29 @@ def run_rake(stop_words,text,content,min_freq) :
     return keywords
 
 #########################################################################
-# def run_all_data(model, feature_name):
-#
-#     """
-#     :param model:
-#     :param feature_name:
-#     :return: get keyword for file_path and write in file
-#     """
-#
-#     # file = open(file_rake, 'w')
-#     with open(file_path) as csvfile:
-#         reader = csv.DictReader(csvfile)
-#         for row in reader:
-#             id = row['newsId']
-#             publish_date = row['update_time']
-#             update_date = publish_date
-#             result,title,link = run_api(id,model,feature_name)
-#             string = ''
-#             for r in result :
-#                 string +=r+";"
-#
-#             print(id,update_date,publish_date,string)
-#             insert(id,update_date,publish_date,string)
-#             # write_file(id,date,file,result)
+def run_all_data(stop_words,model, feature_name):
+
+    """
+    :param model:
+    :param feature_name:
+    :return: get keyword for file_path and write in file
+    """
+
+    # file = open(file_rake, 'w')
+    with open(file_path) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            id = row['newsId']
+            publish_date = row['update_time']
+            update_date = publish_date
+            result,contents = run_api(id,stop_words,model,feature_name)
+            string = ''
+            for r in result :
+                string +=r+";"
+
+            print(id,update_date,publish_date,string)
+            insert(id,update_date,publish_date,string)
+            # write_file(id,date,file,result)
 
 
 def get_content(aid):
@@ -262,7 +262,7 @@ if __name__ == '__main__' :
     start = time.time()
     results , contents = run_api(id,stop_words,model,feature_names)
     print("contents :",contents)
-    # run_all_data(model,feature_names)
+    run_all_data(stop_words,model,feature_names)
     print("--- %s seconds ---" % (time.time() - start))
     # get_content(id)
 

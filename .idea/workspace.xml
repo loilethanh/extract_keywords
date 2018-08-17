@@ -2,15 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c0d88ca-96ab-4fde-bc8a-b6ff76b1680a" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/auto_gettag.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cosine_similar.py" beforeDir="false" afterPath="$PROJECT_DIR$/cosine_similar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/data_news_soha.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/rake_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/rake_api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/rake_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/rake_run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/data_access.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_access.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rake.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rake.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tfidf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tfidf.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -56,14 +53,14 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.6671827">
+    <splitter split-orientation="horizontal" split-proportion="0.42724457">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file leaf-file-name="tfidf.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="tfidf.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/tfidf.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2023">
-                  <caret line="119" selection-start-line="119" selection-end-line="119" />
+                <state relative-caret-position="1887">
+                  <caret line="111" column="28" lean-forward="true" selection-start-line="111" selection-start-column="28" selection-end-line="111" selection-end-column="28" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -71,26 +68,15 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="cosine_similar.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/cosine_similar.py">
+          <file leaf-file-name="data_access.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/src/data_access.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-255">
-                  <caret line="57" column="25" lean-forward="true" selection-start-line="57" selection-start-column="25" selection-end-line="57" selection-end-column="25" />
+                <state relative-caret-position="350">
+                  <caret line="215" column="14" lean-forward="true" selection-start-line="215" selection-start-column="14" selection-end-line="215" selection-end-column="14" />
                   <folding>
-                    <element signature="e#0#54#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="rake_run.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/rake_run.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-120">
-                  <caret line="206" column="40" lean-forward="true" selection-start-line="206" selection-start-column="40" selection-end-line="206" selection-end-column="40" />
-                  <folding>
-                    <element signature="e#0#38#0" expanded="true" />
-                    <element signature="e#1202#1275#0" />
+                    <element signature="e#0#27#0" expanded="true" />
+                    <element signature="e#1884#1908#0" />
+                    <element signature="e#5277#5305#0" />
                   </folding>
                 </state>
               </provider>
@@ -112,30 +98,27 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="rake.py" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/rake.py">
+          <file leaf-file-name="auto_gettag.py" pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/auto_gettag.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="710">
-                  <caret line="294" selection-start-line="294" selection-end-line="294" />
-                  <folding>
-                    <element signature="e#73#111#0" expanded="true" />
-                    <element signature="e#1476#1522#0" />
-                  </folding>
+                <state relative-caret-position="102">
+                  <caret line="6" selection-start-line="6" selection-end-line="6" />
                 </state>
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="data_access.py" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/data_access.py">
+          <file leaf-file-name="rake_run.py" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/rake_run.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-977">
-                  <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+                <state relative-caret-position="407">
+                  <caret line="255" lean-forward="true" selection-start-line="255" selection-end-line="255" />
                   <folding>
-                    <element signature="e#0#27#0" expanded="true" />
-                    <element signature="e#816#841#0" />
-                    <element signature="e#1715#1739#0" />
-                    <element signature="e#2609#3564#0" />
-                    <element signature="e#5518#5546#0" />
+                    <element signature="e#0#38#0" expanded="true" />
+                    <element signature="e#2072#2773#0" />
+                    <element signature="e#2839#3099#0" />
+                    <element signature="e#3156#4028#0" />
+                    <element signature="e#4071#4593#0" />
+                    <element signature="e#4639#6166#0" />
                   </folding>
                 </state>
               </provider>
@@ -144,6 +127,13 @@
         </leaf>
       </split-second>
     </splitter>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
@@ -180,9 +170,10 @@
         <option value="$PROJECT_DIR$/src/rake.py" />
         <option value="$PROJECT_DIR$/src/tfidf.py" />
         <option value="$PROJECT_DIR$/config.json" />
-        <option value="$PROJECT_DIR$/src/data_access.py" />
         <option value="$PROJECT_DIR$/rake_api.py" />
         <option value="$PROJECT_DIR$/cosine_similar.py" />
+        <option value="$PROJECT_DIR$/auto_gettag.py" />
+        <option value="$PROJECT_DIR$/src/data_access.py" />
         <option value="$PROJECT_DIR$/rake_run.py" />
       </list>
     </option>
@@ -392,9 +383,10 @@
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1583062" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.50032574" side_tool="true" weight="0.33040202" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32914573" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Python Console" order="10" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49967426" weight="0.40452263" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49967426" weight="0.39698493" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.3298969" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -411,7 +403,6 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="SciView" order="3" weight="0.32975152" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32914573" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="13" weight="0.32914573" />
     </layout>
     <layout-to-restore>
@@ -453,20 +444,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/data_access.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1054">
-          <caret line="63" column="34" lean-forward="true" selection-start-line="63" selection-start-column="34" selection-end-line="63" selection-end-column="34" />
-          <folding>
-            <element signature="e#0#27#0" expanded="true" />
-            <element signature="e#816#841#0" />
-            <element signature="e#1715#1739#0" />
-            <element signature="e#2609#3564#0" />
-            <element signature="e#5518#5546#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/tfidf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -518,10 +495,8 @@
           <caret line="83" selection-start-line="83" selection-end-line="83" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
-            <element signature="e#816#841#0" />
-            <element signature="e#1715#1739#0" />
-            <element signature="e#2609#3564#0" />
-            <element signature="e#5518#5546#0" />
+            <element signature="e#1884#1908#0" />
+            <element signature="e#5277#5305#0" />
           </folding>
         </state>
       </provider>
@@ -718,16 +693,52 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/rake.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="710">
+          <caret line="294" selection-start-line="294" selection-end-line="294" />
+          <folding>
+            <element signature="e#73#111#0" expanded="true" />
+            <element signature="e#1476#1522#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/tfidf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1887">
+          <caret line="111" column="28" lean-forward="true" selection-start-line="111" selection-start-column="28" selection-end-line="111" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cosine_similar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="969">
+          <caret line="57" column="25" lean-forward="true" selection-start-line="57" selection-start-column="25" selection-end-line="57" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#54#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/auto_gettag.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/data_access.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-977">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="350">
+          <caret line="215" column="14" lean-forward="true" selection-start-line="215" selection-start-column="14" selection-end-line="215" selection-end-column="14" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
-            <element signature="e#816#841#0" />
-            <element signature="e#1715#1739#0" />
-            <element signature="e#2609#3564#0" />
-            <element signature="e#5518#5546#0" />
+            <element signature="e#1884#1908#0" />
+            <element signature="e#5277#5305#0" />
           </folding>
         </state>
       </provider>
@@ -742,44 +753,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/rake.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="710">
-          <caret line="294" selection-start-line="294" selection-end-line="294" />
-          <folding>
-            <element signature="e#73#111#0" expanded="true" />
-            <element signature="e#1476#1522#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cosine_similar.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-255">
-          <caret line="57" column="25" lean-forward="true" selection-start-line="57" selection-start-column="25" selection-end-line="57" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rake_run.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-120">
-          <caret line="206" column="40" lean-forward="true" selection-start-line="206" selection-start-column="40" selection-end-line="206" selection-end-column="40" />
+        <state relative-caret-position="407">
+          <caret line="255" lean-forward="true" selection-start-line="255" selection-end-line="255" />
           <folding>
             <element signature="e#0#38#0" expanded="true" />
-            <element signature="e#1202#1275#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/tfidf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2023">
-          <caret line="119" selection-start-line="119" selection-end-line="119" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#2072#2773#0" />
+            <element signature="e#2839#3099#0" />
+            <element signature="e#3156#4028#0" />
+            <element signature="e#4071#4593#0" />
+            <element signature="e#4639#6166#0" />
           </folding>
         </state>
       </provider>

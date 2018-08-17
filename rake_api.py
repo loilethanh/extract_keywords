@@ -11,7 +11,7 @@ stoppath="data/stoplists/vietnamese-stopwords.txt"
 models,feature_names = load_model(file_model)
 stop_words = load_stopwords_tfidf(stoppath)
 
-candidate_news = get_tags_limit_30day()
+candidate_news = get_tags_limit_day()
 candidate_news_tfidf,list_contents = get_all_tfidf(models,candidate_news)
 
 
