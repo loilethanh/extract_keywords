@@ -29,7 +29,7 @@ def load_model(file):
 
 def norm (numbers) :
     a = math.sqrt(numbers)
-    return 1/a
+    return 1.0/a
 
 def getData():
     data=[]
@@ -58,14 +58,7 @@ def getData():
 
     return data ,data_postag
 
-
-
 def load_stopwords_tfidf(file):
-    # pos = ['C', 'Cc','A','M', 'E', 'R',  'T', 'X']
-    # pos=['C', 'Cc','E','T', 'X']
-    # pos=["C","Cc","T",'X','E','R',"M"]
-    # pos=[]
-    # pos = ['Nu', 'Ny', "C", "Cc", "T", 'X', 'E', 'R', 'Z']
     stop_words = []
     for x in open(file, 'r').read().split('\n'):
         d = ''
@@ -77,12 +70,6 @@ def load_stopwords_tfidf(file):
                 d += w[i]+"_"
             d+=w[len(w)-1]
             stop_words.append(d)
-
-    # for d in data_pos :
-    #     print(d['id'])
-    #     for w in d['content_postag'] :
-    #         if(d['content_postag'][w] in pos ) :
-    #             stop_words.append(w)
     return stop_words
 
 
@@ -127,70 +114,41 @@ def run_ngram(save_option= False ):
             pickle.dump(model, f)
 
 
-def get_tf_idf(id,file, model ,feature_names) :
-    # doc_set = getData()
-    # data_postag = load_postag_tfidf(id)
-    # start = time.time()
-    stop_words = load_stopwords_tfidf(file)
-    # print("stopword :", time.time() - start)
+def get_tf_idf(stop_words,contents, model ,feature_names) :
 
-    # start = time.time()
-    row = get_token(id)
-    title = row['title_token'].lower()
-    content =row['sapo_token'].lower() + " " + row['content_token'].lower()
-    # print("get data :", time.time() - start)
+    # row = get_token(id)
+    title = contents['title']
+    content =contents['content']
 
-    # start = time.time()
     tokens = tokenizer.tokenize(title+content)
     stopped_tokens = [word for word in tokens if not word in stop_words]
     string = ''
     for word in stopped_tokens:
         string += word + " "
     str = [string]
-    # print("tokenize :", time.time() - start)
-
-
-    # print("vocab size: ", len(model.vocabulary_))
-    # model.
-    # start = time.time()
     tfidf_matrix = model.transform(str)
-    # print("Time transform: ", time.time() - start)
-
-    # start = time.time()
-    # print(feature_names)
-    # print("get feature name : ", time.time() - start)
-
-    # start = time.time()
     feature_index = tfidf_matrix.nonzero()[1]
     tfidf_scores = zip(feature_index, [tfidf_matrix[0, x] for x in feature_index])
-    # print("get score : ", time.time() - start)
 
     result = []
-
-    # start = time.time()
     for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
         if w in (title) :
             result.append((w, s * norm(len(title))))
-
         if ((w in content) and (w not in title) and (norm(len(content)) != 0)):
             result.append((w, s * norm(len(content))))
-    # print("cal :", time.time() - start)
 
-    # start = time.time()
     result.sort(key=lambda x: x[1], reverse=True)
-    # print("sort", time.time() - start)
 
-    # print("tfidf",result)
 
     return result
 
 #
-if __name__=="__main__" :
-    start = time.time()
-    # model,feature_names = load_model(file_model)
-    # run_ngram(save_option=True)
-    # get_tf_idf(20180731122004553,model,feature_names)
-    print("--- %s seconds ---" % (time.time() - start))
+# if __name__=="__main__" :
+#     start = time.time()
+#     # model,feature_names = load_model(file_model)
+#     # run_ngram(save_option=True)
+#     # get_tf_idf(20180731122004553,model,feature_names)
+#     print("--- %s seconds ---" % (time.time() - start))
     # run()
     # getData()
     # load_postag()

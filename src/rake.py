@@ -48,20 +48,20 @@ def load_postag (content_pos):
     # data_postag.append(content_postag)
     return content_postag
 
-def load_stopwords(stop_path,content_pos,pos):
-    data_pos = load_postag(content_pos)
-    stop_words = []
-    for x in open(stop_path).read().split('\n'):
-        d = ''
-        w = x.split(" ")
-        if len(w) == 1:
-            stop_words.append(w[0])
-        else:
-            for i in range(len(w) - 1):
-                d += w[i] + "_"
-            d += w[len(w) - 1]
-            stop_words.append(d)
 
+def load_stopwords(stop_words,content_pos,pos):
+    data_pos = load_postag(content_pos)
+
+    # for x in open(stop_path).read().split('\n'):
+    #     d = ''
+    #     w = x.split(" ")
+    #     if len(w) == 1:
+    #         stop_words.append(w[0])
+    #     else:
+    #         for i in range(len(w) - 1):
+    #             d += w[i] + "_"
+    #         d += w[len(w) - 1]
+    #         stop_words.append(d)
     for w in data_pos:
         if(data_pos[w] in pos ) :
             stop_words.append(w)
@@ -271,10 +271,10 @@ class Rake(object):
         self.__max_words_length_adj = max_words_length_adj
         self.__min_phrase_freq_adj = min_phrase_freq_adj
 
-    def run(self, stop_words_path, text , content_pos ,pos):
+    def run(self, stop_words, text , content_pos ,pos):
 
-        self.__stop_words_path = stop_words_path
-        self.__stop_words_list = load_stopwords(stop_words_path,content_pos,pos)  ## vietnamese
+        self.__stop_words = stop_words
+        self.__stop_words_list = load_stopwords(stop_words,content_pos,pos)  ## vietnamese
         sentence_list = split_sentences(text)
 
         stop_words_pattern = build_stop_word_regex(self.__stop_words_list)
@@ -292,38 +292,4 @@ class Rake(object):
         return sorted_keywords
 
 
-if __name__ == '__main__':
 
-    text = "Tâm trạng xấu có thể khiến tim bạn đập nhanh hơn " \
-           "và huyết áp của bạn tăng lên." \
-           " Khi người già bị chấn thương tinh thần nghiêm trọng, " \
-           "có sự tức giận, lo lắng, hận thù và cảm xúc khác, " \
-           "nó có thể gây ra sự gia tăng huyết áp đột ngột," \
-           " dữ dội có thể dẫn đến đột quỵ, suy tim," \
-           " bệnh tim mạch vành, nhồi máu cơ tim, đột tử."
-
-    # # Split text into sentences
-    sentenceList = split_sentences(text)
-    # stoppath = "FoxStoplist.txt" #Fox stoplist contains "numbers", so it will not find "natural numbers" like in Table 1.1
-    stoppath = "../data/stoplists/vietnamese-stopwords.txt"  # SMART stoplist misses some of the lower-scoring keywords in Figure 1.5, which means that the top 1/3 cuts off one of the 4.0 score words in Table 1.1
-    stopwordpattern = build_stop_word_regex(stoppath)
-
-    # generate candidate keywords
-    phraseList = generate_candidate_keywords(sentenceList, stopwordpattern, load_stop_words(stoppath))
-    print(phraseList)
-    # calculate individual word scores
-    wordscores = calculate_word_scores(phraseList)
-
-    # generate candidate keyword scores
-    keywordcandidates = generate_candidate_keyword_scores(phraseList, wordscores)
-    if debug: print(keywordcandidates)
-    sortedKeywords = sorted(six.iteritems(keywordcandidates), key=operator.itemgetter(1), reverse=True)
-    if debug: print(sortedKeywords)
-
-    totalKeywords = len(sortedKeywords)
-    if debug: print(totalKeywords)
-    print(sortedKeywords[0:(totalKeywords // 3)])
-    #
-    # rake = Rake(5,3,2)
-    # keywords = rake.run(stoppath,text,[],[])
-    # print(keywords)

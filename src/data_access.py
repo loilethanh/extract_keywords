@@ -1,15 +1,16 @@
 from pymysql import connect
 from pymysql import cursors
+import json
 
-import datetime
-HOST = "192.168.23.191"
-DB_NAME = "news"
-USER_NAME = "recommender"
-PASSWORD = "lga5QenoQEuksNy"
+config_path = "../config.json"
 
-
+def init():
+    with open(config_path) as config_buffer:
+        config = json.loads(config_buffer.read())
+    return config['HOST'],config['DB_NAME'],config['USER_NAME'],config['PASSWORD']
 
 def get_connection():
+    HOST,DB_NAME,USER_NAME, PASSWORD = init()
     conn = connect(host=HOST, user=USER_NAME, passwd=PASSWORD, db=DB_NAME, charset='utf8')
     conn.autocommit(False)
     return conn
@@ -51,38 +52,40 @@ def free_connection(conn, cur):
         pass
     
 
-def get_token(news_id):
-    query = "SELECT * FROM recsys.news_token WHERE news_id = %s" % news_id
-    conn = None
-    cur = None
-    row = None
-    try:
-        conn = get_connection()
-        cur = get_dict_cursor(conn)
-        cur.execute(query)
-        row = cur.fetchone()
-    except Exception as e:
-        print (e)
-    finally:
-        free_connection(conn, cur)
-    return row
-
-
-def get_news(news_id):
-    query = "SELECT * FROM news.news_resource WHERE newsId = %s" % news_id
-    conn = None
-    cur = None
-    row = None
-    try:
-        conn = get_connection()
-        cur = get_dict_cursor(conn)
-        cur.execute(query)
-        row = cur.fetchone()
-    except Exception as e :
-        print (e)
-    finally:
-        free_connection(conn, cur)
-    return row
+# def get_token(news_id):
+#     query = "SELECT recsys.news_token.title_token," \
+#             "recsys.news_token.sapo_token, recsys.news_token.content_token " \
+#             "FROM recsys.news_token WHERE news_id = %s" % news_id
+#     conn = None
+#     cur = None
+#     row = None
+#     try:
+#         conn = get_connection()
+#         cur = get_dict_cursor(conn)
+#         cur.execute(query)
+#         row = cur.fetchone()
+#     except Exception as e:
+#         print (e)
+#     finally:
+#         free_connection(conn, cur)
+#     return row
+#
+#
+# def get_news(news_id):
+#     query = "SELECT * FROM news.news_resource WHERE newsId = %s" % news_id
+#     conn = None
+#     cur = None
+#     row = None
+#     try:
+#         conn = get_connection()
+#         cur = get_dict_cursor(conn)
+#         cur.execute(query)
+#         row = cur.fetchone()
+#     except Exception as e :
+#         print (e)
+#     finally:
+#         free_connection(conn, cur)
+#     return row
 
 # def get_news_update():
 #     query = """SELECT * FROM news.news_resource
@@ -118,12 +121,17 @@ def get_news(news_id):
 #         free_connection(conn, cur)
 #     return row
 
-def get_tags_list(list) :
-    query = "SELECT recsys.news_token.news_id ,recsys.news_token.sapo_token, recsys.news_token.content_token , recsys.news_token.title_token," \
-            "       news.news_resource.title, news.news_resource.url" \
+def get_news_list(list) :
+    query = "SELECT recsys.news_token.news_id ,recsys.news_token.sapo_token," \
+            "recsys.news_token.content_token , recsys.news_token.title_token," \
+            "recsys.news_token.tag_token,recsys.news_token.tag_postag," \
+            "recsys.news_token.title_postag, recsys.news_token.sapo_postag," \
+            "recsys.news_token.content_postag," \
+            "news.news_resource.title, news.news_resource.url" \
             " FROM recsys.news_token " \
             " INNER JOIN news.news_resource ON  news.news_resource.newsId = recsys.news_token.news_id" \
-            " WHERE recsys.news_token.news_id in %s" %str(tuple(list))
+            " WHERE recsys.news_token.news_id in (%s)" % ','.join(map(str, list))
+    # print(query)
     conn = None
     cur = None
     row = None
@@ -132,6 +140,31 @@ def get_tags_list(list) :
         cur = get_dict_cursor(conn)
         cur.execute(query)
         row = cur.fetchall()
+    except Exception as e:
+        print(e)
+    finally:
+        free_connection(conn, cur)
+    return row
+
+def get_new(id) :
+    query = "SELECT recsys.news_token.news_id ,recsys.news_token.sapo_token," \
+            "recsys.news_token.content_token , recsys.news_token.title_token," \
+            "recsys.news_token.tag_token,recsys.news_token.tag_postag," \
+            "recsys.news_token.title_postag, recsys.news_token.sapo_postag," \
+            "recsys.news_token.content_postag," \
+            "news.news_resource.title, news.news_resource.url" \
+            " FROM recsys.news_token " \
+            " INNER JOIN news.news_resource ON  news.news_resource.newsId = recsys.news_token.news_id" \
+            " WHERE recsys.news_token.news_id = %s" %id
+    # print(query)
+    conn = None
+    cur = None
+    row = None
+    try:
+        conn = get_connection()
+        cur = get_dict_cursor(conn)
+        cur.execute(query)
+        row = cur.fetchone()
     except Exception as e:
         print(e)
     finally:
@@ -160,7 +193,7 @@ def get_tags_limit_30day():
 def insert(id ,updateTime, publishTime,tags) :
 
     query = "INSERT INTO recsys.tag_extractor_2 (newsId,updateTime,publishDate,tags) VALUES (%s, '%s','%s','%s')" %(id,updateTime,publishTime,tags)
-    print(query)
+    # print(query)
     conn = None
     cur = None
     row = None
@@ -209,24 +242,8 @@ def insert(id ,updateTime, publishTime,tags) :
 
 
 if __name__ == '__main__':
-    list =[201807160824365, 2018071613400603,2018071710394128,2018071809285878,2018071814084838]
-    # insert(99999,"2018-08-12 13:12:14","2018-08-09 12:34:45", "tag1;tag2;tag3;tag4")
-    row = get_token(20180617093030)
-    print(row.keys())
-
-    row = get_news(20180617093030)
-    print(row.keys())
-
-    # print(row['update_time'])
-    # row = get_tags_limit_30day()
-    row = get_tags_list(list)
-    print(len(row),row)
-
-    # row = get_tags_all()
-    # print(len(row),row)
-    # delete_news_limit()
-
-    # row = get_tags_all()
-    # print(len(row), row)
+#     list =["20180815110622475"]
+    row = get_tags_limit_30day()
+    print(row)
 
 
