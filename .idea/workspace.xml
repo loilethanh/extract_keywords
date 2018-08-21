@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c0d88ca-96ab-4fde-bc8a-b6ff76b1680a" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/auto_gettag.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auto_gettag.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cosine_similar.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/cosine_similar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/stoplists/vietnamese-stopwords.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/stoplists/vietnamese-stopwords.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rake_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/rake_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rake_run.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rake_run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data_access.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/data_access.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/rake.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/rake.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tfidf.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tfidf.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -76,7 +68,7 @@
             <entry file="file://$PROJECT_DIR$/src/data_access.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="220">
-                  <caret line="243" column="6" lean-forward="true" selection-start-line="243" selection-start-column="6" selection-end-line="243" selection-end-column="6" />
+                  <caret line="243" column="6" selection-start-line="243" selection-start-column="6" selection-end-line="243" selection-end-column="6" />
                   <folding>
                     <element signature="e#0#27#0" expanded="true" />
                     <element signature="e#136#309#0" />
@@ -91,14 +83,23 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="auto_gettag.py" pinned="false" current-in-tab="true">
+          <file leaf-file-name="auto_gettag.py" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/auto_gettag.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="336">
-                  <caret line="34" column="31" lean-forward="true" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+                  <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
                   <folding>
                     <element signature="e#0#26#0" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/.gitignore">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="85">
+                  <caret line="5" column="4" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
                 </state>
               </provider>
             </entry>
@@ -111,7 +112,7 @@
             <entry file="file://$PROJECT_DIR$/src/rake.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="310">
-                  <caret line="22" column="20" lean-forward="true" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
+                  <caret line="22" column="20" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
                   <folding>
                     <element signature="e#73#111#0" expanded="true" />
                   </folding>
@@ -123,7 +124,7 @@
             <entry file="file://$PROJECT_DIR$/src/tfidf.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="1649">
-                  <caret line="97" lean-forward="true" selection-start-line="97" selection-end-line="97" />
+                  <caret line="97" selection-start-line="97" selection-end-line="97" />
                   <folding>
                     <element signature="e#0#11#0" expanded="true" />
                   </folding>
@@ -191,6 +192,7 @@
         <option value="$PROJECT_DIR$/src/tfidf.py" />
         <option value="$PROJECT_DIR$/src/rake.py" />
         <option value="$PROJECT_DIR$/src/rake_run.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -411,14 +413,14 @@
     <frame x="64" y="-11" width="1537" height="912" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14983714" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14983714" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.50032574" side_tool="true" weight="0.33040202" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Python Console" order="10" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49967426" weight="0.51758796" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.3298969" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.32914573" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39949748" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -475,13 +477,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/data_access.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1394">
-          <caret line="83" selection-start-line="83" selection-end-line="83" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/tfidf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -720,7 +715,7 @@
     <entry file="file://$PROJECT_DIR$/src/tfidf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1649">
-          <caret line="97" lean-forward="true" selection-start-line="97" selection-end-line="97" />
+          <caret line="97" selection-start-line="97" selection-end-line="97" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
@@ -740,7 +735,7 @@
     <entry file="file://$PROJECT_DIR$/src/rake.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="310">
-          <caret line="22" column="20" lean-forward="true" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
+          <caret line="22" column="20" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
           <folding>
             <element signature="e#73#111#0" expanded="true" />
           </folding>
@@ -760,7 +755,7 @@
     <entry file="file://$PROJECT_DIR$/src/data_access.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
-          <caret line="243" column="6" lean-forward="true" selection-start-line="243" selection-start-column="6" selection-end-line="243" selection-end-column="6" />
+          <caret line="243" column="6" selection-start-line="243" selection-start-column="6" selection-end-line="243" selection-end-column="6" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
             <element signature="e#136#309#0" />
@@ -777,10 +772,17 @@
     <entry file="file://$PROJECT_DIR$/src/auto_gettag.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
-          <caret line="34" column="31" lean-forward="true" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
+          <caret line="34" column="31" selection-start-line="34" selection-start-column="31" selection-end-line="34" selection-end-column="31" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="4" selection-start-line="5" selection-start-column="4" selection-end-line="5" selection-end-column="4" />
         </state>
       </provider>
     </entry>
