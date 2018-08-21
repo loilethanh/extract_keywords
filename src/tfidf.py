@@ -3,7 +3,6 @@ from nltk.tokenize import RegexpTokenizer
 import csv
 from nltk.tokenize import word_tokenize
 import math
-from src.data_access  import *
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
@@ -14,6 +13,7 @@ file_path = "../data/data_news_soha_10000.csv"
 # file_write = "models/tf-idf.txt"
 file_model ="../models/vectorizer.pk"
 file_stopwords = '../data/stoplists/vietnamese-stopwords.txt'
+# file_stopwords = '../data/stoplists/words.txt'
 # limit = 1000
 
 def load_model(file):
@@ -30,6 +30,7 @@ def load_model(file):
 def norm (numbers) :
     a = math.sqrt(numbers)
     return 1.0/a
+
 
 def getData():
     data=[]
@@ -73,7 +74,6 @@ def load_stopwords_tfidf(file):
     return stop_words
 
 
-
 def get_corpus(doc_set,stop_words):
     texts = []
     for d in doc_set:
@@ -103,14 +103,13 @@ def run_ngram(save_option= False ):
         for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
             if (w in doc_set[index]['title']  ):
                 res.append((str(w), s * norm(len(doc_set[index]['title']))))
-
             if ((w in doc_set[index]['content']) and (w not in doc_set[index]['title'] ) and(norm(len(doc_set[index]['content'])) != 0 )):
                 res.append((str(w), s * norm(len(doc_set[index]['content']))))
         res.sort(key=lambda x: x[1], reverse=True)
         result.append(res)
 
     if save_option == True :
-        with open('../models/vectorizer1.pk', 'wb') as f:
+        with open('../models/vectorizer_word.pk', 'wb') as f:
             pickle.dump(model, f)
 
 
@@ -120,7 +119,7 @@ def get_tf_idf(stop_words,contents, model ,feature_names) :
     title = contents['title']
     content =contents['content']
 
-    tokens = tokenizer.tokenize(title+content)
+    tokens = tokenizer.tokenize(title+" "+content)
     stopped_tokens = [word for word in tokens if not word in stop_words]
     string = ''
     for word in stopped_tokens:
@@ -143,12 +142,12 @@ def get_tf_idf(stop_words,contents, model ,feature_names) :
     return result
 
 #
-# if __name__=="__main__" :
-#     start = time.time()
-#     # model,feature_names = load_model(file_model)
-#     # run_ngram(save_option=True)
+if __name__=="__main__" :
+    start = time.time()
+    # model,feature_names = load_model(file_model)
+    run_ngram(save_option=True)
 #     # get_tf_idf(20180731122004553,model,feature_names)
-#     print("--- %s seconds ---" % (time.time() - start))
+    print("--- %s seconds ---" % (time.time() - start))
     # run()
     # getData()
     # load_postag()

@@ -2,17 +2,19 @@
 
 from __future__ import absolute_import
 from __future__ import print_function
+from src.rake_run import *
 import re
 import operator
-import six,csv
 from nltk.tokenize import word_tokenize
+from  collections import *
+import six,csv
 from six.moves import range
-from collections import Counter
-from src.tfidf import *
 from src.data_access import *
+from src.tfidf import *
+
 debug = False
 test = False
-
+stoppath = "../data/stoplists/vietnamese-stopwords.txt"
 def is_number(s):
     try:
         float(s) if '.' in s else int(s)
@@ -49,19 +51,19 @@ def load_postag (content_pos):
     return content_postag
 
 
-def load_stopwords(stop_words,content_pos,pos):
+def load_stopwords(content_pos,pos):
     data_pos = load_postag(content_pos)
-
-    # for x in open(stop_path).read().split('\n'):
-    #     d = ''
-    #     w = x.split(" ")
-    #     if len(w) == 1:
-    #         stop_words.append(w[0])
-    #     else:
-    #         for i in range(len(w) - 1):
-    #             d += w[i] + "_"
-    #         d += w[len(w) - 1]
-    #         stop_words.append(d)
+    stop_words = []
+    for x in open(stoppath).read().split('\n'):
+        d = ''
+        w = x.split(" ")
+        if len(w) == 1:
+            stop_words.append(w[0])
+        else:
+            for i in range(len(w) - 1):
+                d += w[i] + "_"
+            d += w[len(w) - 1]
+            stop_words.append(d)
     for w in data_pos:
         if(data_pos[w] in pos ) :
             stop_words.append(w)
@@ -271,15 +273,15 @@ class Rake(object):
         self.__max_words_length_adj = max_words_length_adj
         self.__min_phrase_freq_adj = min_phrase_freq_adj
 
-    def run(self, stop_words, text , content_pos ,pos):
+    def run(self, text , content_pos ,pos):
+        # print(pos)
 
-        self.__stop_words = stop_words
-        self.__stop_words_list = load_stopwords(stop_words,content_pos,pos)  ## vietnamese
+        stop_words_list = load_stopwords(content_pos,pos)  ## vietnamese
         sentence_list = split_sentences(text)
 
-        stop_words_pattern = build_stop_word_regex(self.__stop_words_list)
+        stop_words_pattern = build_stop_word_regex(stop_words_list)
 
-        phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern, self.__stop_words_list,
+        phrase_list = generate_candidate_keywords(sentence_list, stop_words_pattern,stop_words_list,
                                                   self.__min_char_length, self.__max_words_length,
                                                   self.__min_words_length_adj, self.__max_words_length_adj,
                                                   self.__min_phrase_freq_adj)

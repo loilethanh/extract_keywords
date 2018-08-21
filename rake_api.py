@@ -1,7 +1,5 @@
 from flask import Flask, jsonify
-from rake_run import *
-from src.tfidf import *
-from cosine_similar import *
+from src.cosine_similar import *
 
 application = Flask(__name__)
 

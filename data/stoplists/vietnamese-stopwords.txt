@@ -6,6 +6,7 @@ ai nấy
 ai đó
 alô
 amen
+ăn hàng
 anh
 anh ấy
 ba
@@ -367,6 +368,7 @@ cô mình
 cô quả
 cô tăng
 cô ấy
+cô gái
 công nhiên
 cùng
 cùng chung
@@ -397,6 +399,7 @@ cơ hội
 cơ mà
 cơn
 cả
+có lẽ
 cả nghe
 cả nghĩ
 cả ngày
@@ -487,10 +490,13 @@ dễ thấy
 dễ ăn
 dễ đâu
 dở chừng
+dường như
 dữ
 dữ cách
+đôi khi
 em
 em em
+giai đoạn
 giá trị
 giá trị thực tế
 giảm
@@ -569,11 +575,14 @@ hết ý
 họ
 họ gần
 họ xa
+hình_ảnh
 hỏi
 hỏi lại
 hỏi xem
 hỏi xin
 hỗ trợ
+hôm nay
+hôm quas
 khi
 khi khác
 khi không
@@ -848,12 +857,14 @@ nghĩ tới
 nghĩ xa
 nghĩ đến
 nghỉm
+nghĩa là
 ngoài
 ngoài này
 ngoài ra
 ngoài xa
 ngoải
 nguồn
+nguồn tin
 ngày
 ngày càng
 ngày cấp
@@ -1367,6 +1378,8 @@ thế lại
 thế mà
 thế nào
 thế nên
+thế nhưng
+thế thì
 thế ra
 thế sự
 thế thì
@@ -1514,6 +1527,7 @@ tại vì
 tại đâu
 tại đây
 tại đó
+tài khoản
 tạo
 tạo cơ hội
 tạo nên
