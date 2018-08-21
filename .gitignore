@@ -4,3 +4,5 @@ result
 models
 config.json
 venv
+__pycache__
+.idea
