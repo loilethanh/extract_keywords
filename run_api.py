@@ -1,10 +1,9 @@
 from flask import Flask, jsonify
 from src.cosine_similar import *
-
+from  setup import *
 application = Flask(__name__)
 
-file_model = 'models/vectorizer.pk'
-stoppath="data/stoplists/vietnamese-stopwords.txt"
+
 
 models,feature_names = load_model(file_model)
 stop_words = load_stopwords_tfidf(stoppath)

@@ -11,10 +11,12 @@ import six,csv
 from six.moves import range
 from src.data_access import *
 from src.tfidf import *
-
+from setup import *
 debug = False
 test = False
-stoppath = "../data/stoplists/vietnamese-stopwords.txt"
+
+
+
 def is_number(s):
     try:
         float(s) if '.' in s else int(s)

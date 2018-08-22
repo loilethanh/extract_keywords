@@ -1,9 +1,7 @@
 from pymysql import connect
 from pymysql import cursors
 import json
-from pyvi import *
-
-config_path = "../config.json"
+from setup import *
 
 def init():
     with open(config_path) as config_buffer:
@@ -87,34 +85,34 @@ def get_news(news_id):
     return row
 
 
-def get_news_update():
-    query ="SELECT recsys.news_token.news_id ,recsys.news_token.sapo_token," \
-            "recsys.news_token.content_token , recsys.news_token.title_token," \
-            "recsys.news_token.tag_token,recsys.news_token.tag_postag," \
-            "recsys.news_token.title_postag, recsys.news_token.sapo_postag," \
-            "recsys.news_token.content_postag," \
-            "news.news_resource.title, news.news_resource.url" \
-            "   FROM news.news_resource " \
-            "   INNER JOIN recsys.news_token ON  news.news_resource.newsId = recsys.news_token.news_id" \
-            "   WHERE news.news_resource.publishDate >= NOW() - INTERVAL 30 DAY AND  news.news_resource.publishDate < NOW() " \
-           "    LIMIT 10000"
-
-    print(query)
-    conn = None
-    cur = None
-    row = None #ORDER BY publishDate DESC LIMIT 10000
-
-
-    try:
-        conn = get_connection()
-        cur = get_dict_cursor(conn)
-        cur.execute(query)
-        row = cur.fetchall()
-    except Exception as e:
-        print (e)
-    finally:
-        free_connection(conn, cur)
-    return row
+# def get_news_update():
+#     query ="SELECT recsys.news_token.news_id ,recsys.news_token.sapo_token," \
+#             "recsys.news_token.content_token , recsys.news_token.title_token," \
+#             "recsys.news_token.tag_token,recsys.news_token.tag_postag," \
+#             "recsys.news_token.title_postag, recsys.news_token.sapo_postag," \
+#             "recsys.news_token.content_postag," \
+#             "news.news_resource.title, news.news_resource.url" \
+#             "   FROM news.news_resource " \
+#             "   INNER JOIN recsys.news_token ON  news.news_resource.newsId = recsys.news_token.news_id" \
+#             "   WHERE news.news_resource.publishDate >= NOW() - INTERVAL 30 DAY AND  news.news_resource.publishDate < NOW() " \
+#            "    LIMIT 1000"
+#
+#     print(query)
+#     conn = None
+#     cur = None
+#     row = None #ORDER BY publishDate DESC LIMIT 10000
+#
+#
+#     try:
+#         conn = get_connection()
+#         cur = get_dict_cursor(conn)
+#         cur.execute(query)
+#         row = cur.fetchall()
+#     except Exception as e:
+#         print (e)
+#     finally:
+#         free_connection(conn, cur)
+#     return row
 
 
 def get_news_list(list) :
@@ -183,8 +181,8 @@ def get_new_nearly(last_day) :
             "news.news_resource.title, news.news_resource.url" \
             " FROM recsys.news_token " \
             " INNER JOIN news.news_resource ON  news.news_resource.newsId = recsys.news_token.news_id" \
-            " WHERE news.news_resource.publishDate > '%s'" \
-            " LIMIT 1000" %last_day
+            " WHERE news.news_resource.insertDate > '%s' ORDER BY news.news_resource.insertDate" \
+            " LIMIT 10" %last_day
 
     # print(query)
     conn = None
@@ -209,7 +207,7 @@ def get_tags_limit_day():
     """
     query = """SELECT * FROM recsys.tag_extractor_2
                 WHERE `publishDate` >= NOW() - INTERVAL 30 DAY
-                AND `publishDate`  < NOW();"""
+                AND `publishDate`  < NOW() """
     conn = None
     cur = None
     row = None
@@ -261,7 +259,7 @@ def insert(id ,updateTime, publishTime,tags) :
 
 
 def delete_news_limit() :
-    query = "DELETE FROM recsys.tag_extractor_2  LIMIT  46"
+    query = "DELETE FROM recsys.tag_extractor_2  WHERE publishDate > '2018-08-21 16:37:00' "
     conn = None
     cur = None
 
@@ -276,7 +274,7 @@ def delete_news_limit() :
         free_connection(conn, cur)
 
 def get_all():
-    query = """SELECT * FROM recsys.tag_extractor_2"""
+    query = """SELECT * FROM recsys.tag_extractor_2 WHERE publishDate > '2018-08-21 16:37:00' """
     conn = None
     cur = None
     row = None
@@ -293,23 +291,5 @@ def get_all():
 
 
 
-if __name__ == '__main__':
-
-#     list =["20180815110622475"]
-#     row = get_last_day()
-#     print(row)
-#     date = row['last_date']
-#     print(date)
-#     row = get_new_nearly(date)
-#     print(len(row),row[0].keys())
-# #     row = get_all()
-#     print(len(row))
-    # delete_news_limit()
-    # row = get_last_day()
-    # print(len(row))
-
-    row = get_news_update()
-
-    print(len(row))
 
 

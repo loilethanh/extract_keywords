@@ -5,22 +5,9 @@ from src.tfidf import *
 import csv
 from src.data_access import *
 import time
+from setup import *
 import datetime
-from pyvi import ViTokenizer, ViPosTagger
 
-threshold = 5
-file_path = "../data/data_news_soha_10000.csv"
-stoppath = "../data/stoplists/vietnamese-stopwords.txt"
-# stoppath = "../data/stoplists/words.txt"
-file_rake = '../models/rake_v2.txt'
-# file_model = '../models/vectorizer_words.pk'
-file_model = '../models/vectorizer.pk'
-
-pos = ['Nu','L','Ny',"C","Cc","T",'X',"E",'Z','A','R''M']
-pos1 = ['Nu','L','Ny',"C","Cc","T",'X',"E",'R','Z','A',]
-
-check_pos = ['Nu','L','Ny',"C","Cc","T",'X',"E",'R','Z'
-            ,'M',"V",'VV','NV','Nc','NpV','VVb','Nb','VA','P','A','AA']
 
 def run_rake(text,content,min_freq) :
     """
@@ -49,7 +36,7 @@ def run_all_data(stop_words,model, feature_name):
     :return: get keyword for file_path and write in file
     """
 
-    # file = open(file_rake, 'w')
+    file = open(file_rake, 'w')
     with open(file_path) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
@@ -65,10 +52,9 @@ def run_all_data(stop_words,model, feature_name):
 
             print(id,update_date,publish_date,string)
             insert(id,update_date,publish_date,string)
-            # write_file(id,date,file,result)
-            # file.write(id+":"+string)
-            # file.write("\n")
-    # file.close()
+            file.write(id+":"+string)
+            file.write("\n")
+    file.close()
 
 
 def get_content(aid):
@@ -213,24 +199,24 @@ def run_api(id,stop_words,model,feature_names) :
     contents = get_content(id)
     cont = contents['title']+" "+contents['content']
     keys = run_rake(cont, contents['content_PoS'],min_freq)
-    # print("gen_keys_2:",len(keys), keys)
+    print("gen_keys_2:",len(keys), keys)
 
     if len(keys) < 3:
         min_freq = 1
         keys = run_rake(cont, contents['content_PoS'], min_freq)
-        # print("gen_keys_1:", keys)
+        print("gen_keys_1:", keys)
 
     if keys != None :
         tf_idf = get_tfidf_(stop_words,contents, model, feature_names)
         for i in range(len(keys)):
             w = keys.__getitem__(i)
-            # print(w)
+            print(w)
             for j in range(len(tf_idf)):
                 sub = tf_idf[j].split(":")
                 if w[0] == sub[0]:
-                    # print(sub[1])
+                    print(sub[1])
                     result.append((w[0], float(w[1]) * float(sub[1])))
-            # print("\n")
+            print("\n")
         result.sort(key=lambda x: x[1], reverse=True)
 
     tag_news = []
@@ -252,9 +238,9 @@ def run_api(id,stop_words,model,feature_names) :
             if re.replace("_", " ") in tg.replace("_", " "):
                 check_intersect.append(re)
                 break
-    # print("coincident :",check_intersect)
+    print("coincident :",check_intersect)
     result =[re for re in result if re not in check_intersect]
-    # print("check", check)
+    print("check", check)
     result = check + result
     print("result ", result)
 
@@ -323,22 +309,22 @@ def run_content(row,stop_words,model,feature_names) :
     result =[re for re in result if re not in check_intersect]
     # print("check", check)
     result = check + result
-    print("result ", result)
+    # print("result ", result)
 
     return  result
 
-if __name__ == '__main__' :
-
-    model,feature_names = load_model(file_model)
-
-    start = time.time()
-    stop_words = load_stopwords_tfidf(stoppath)
-    print("time load stop words :", time.time() - start )
-    id = "20180820192546461"
-    start = time.time()
-    results , contents = run_api(id,stop_words,model,feature_names)
-    # print("contents :",contents)
-    # run_all_data(stop_words,model,feature_names)
-    print("--- %s seconds ---" % (time.time() - start))
-    # get_content(id)
+# if __name__ == '__main__' :
+#
+#     model,feature_names = load_model(file_model)
+#
+#     start = time.time()
+#     stop_words = load_stopwords_tfidf(stoppath)
+#     print("time load stop words :", time.time() - start )
+#     id = "20180814141652967"
+#     start = time.time()
+#     results , contents = run_api(id,stop_words,model,feature_names)
+#     # print("contents :",contents)
+#     # run_all_data(stop_words,model,feature_names)
+#     print("--- %s seconds ---" % (time.time() - start))
+#     # get_content(id)
 

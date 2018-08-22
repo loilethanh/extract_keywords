@@ -1,10 +1,10 @@
 from src.rake_run import *
 import time
 import datetime
+from setup import *
 
-file_lastdate = "../data/last_datetime.txt"
 
-def get_last_day_():
+def get_lastday_file():
 
     file  = open(file_lastdate,"r")
     date = file.read()
@@ -21,33 +21,23 @@ def write_file(date) :
     except Exception as e :
         print(e)
 
-def insert_auto(date,models,feature_names):
+def insert_auto(date,stop_words,models,feature_names):
     news = get_new_nearly(date)
-    for row in news :
-        print(row['news_id'])
-        result = run_content(row,stop_words,models,feature_names)
-        string = ''
-        for r in result:
-            string += r + ";"
-        print(row['news_id'],row['publishDate'],row['publishDate'],string)
-        try:
-            insert(row['news_id'],row['publishDate'],row['publishDate'],string)
-        except Exception as e :
-            print(e)
+    print("length :",len(news))
+    last_insert = ""
+    if ( len(news) > 0 ):
+        last_insert = news[len(news)-1]['insertDate']
 
-if __name__ == '__main__':
-    models, feature_names = load_model(file_model)
-    stop_words = load_stopwords_tfidf(stoppath)
-    start = time.time()
+        for row in news:
+            result = run_content(row, stop_words, models, feature_names)
+            string = ''
+            for r in result:
+                string += r + ";"
+            update_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(row['news_id'], update_date, row['insertDate'], string)
+            try:
+                insert(row['news_id'], update_date, row['publishDate'], string)
+            except Exception as e:
+                print(e)
 
-    time.clock()
-
-    while True:
-        elapsed = time.time() - start
-        print ("loop cycle time: %f, seconds count: %02d" % (time.clock(),elapsed))
-        date = get_last_day_()
-        insert_auto(date,models,feature_names)
-        last_Date = get_last_day()['last_date']
-        write_file(str(last_Date))
-        time.sleep(5)
-        print("====================================================================")
+    return last_insert

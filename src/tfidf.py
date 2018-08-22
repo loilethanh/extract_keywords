@@ -6,15 +6,11 @@ import math
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
-
+from setup import *
 
 tokenizer = RegexpTokenizer(r'\w+')
-file_path = "../data/data_news_soha_10000.csv"
-# file_write = "models/tf-idf.txt"
-file_model ="../models/vectorizer.pk"
-file_stopwords = '../data/stoplists/vietnamese-stopwords.txt'
-# file_stopwords = '../data/stoplists/words.txt'
-# limit = 1000
+
+
 
 def load_model(file):
     start = time.time()
@@ -88,7 +84,7 @@ def get_corpus(doc_set,stop_words):
 
 def run_ngram(save_option= False ):
     doc_set,data_pos = getData()
-    stop_words = load_stopwords_tfidf(file_stopwords)
+    stop_words = load_stopwords_tfidf(stoppath)
     texts = get_corpus(doc_set,stop_words)
 
     model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words,min_df=1)
