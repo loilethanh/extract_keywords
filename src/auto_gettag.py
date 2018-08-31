@@ -4,17 +4,17 @@ import datetime
 from setup import *
 
 
-def get_lastday_file():
+def get_lastday_file(file_):
 
-    file  = open(file_lastdate,"r")
+    file  = open(file_,"r")
     date = file.read()
-    print(date)
+    print(file_, "  ",date)
     file.close()
     return date
 
-def write_file(date) :
+def write_file(date,file_) :
     try:
-        file = open(file_lastdate,"w")
+        file = open(file_,"w")
         file.write(date)
         file.close()
         print("Done !")
@@ -23,7 +23,7 @@ def write_file(date) :
 
 def insert_auto(date,stop_words,models,feature_names):
     news = get_new_nearly(date)
-    print("length :",len(news))
+    print("length news nearly :",len(news))
     last_insert = ""
     if ( len(news) > 0 ):
         last_insert = news[len(news)-1]['insertDate']
@@ -33,10 +33,19 @@ def insert_auto(date,stop_words,models,feature_names):
             string = ''
             for r in result:
                 string += r + ";"
+            if ("\'") in string:
+                str = ''
+                split = string.split("\'")
+                for i in range(len(split) - 1):
+                    str += split[i].strip() + "\\" + "\'"
+                str += split[len(split) - 1].strip()
+                string = str
             update_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(row['news_id'], update_date, row['insertDate'], string)
             try:
+                print(row['news_id'], update_date, row['publishDate'], string)
                 insert(row['news_id'], update_date, row['publishDate'], string)
+                print("\n")
+
             except Exception as e:
                 print(e)
 

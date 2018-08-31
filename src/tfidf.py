@@ -3,14 +3,29 @@ from nltk.tokenize import RegexpTokenizer
 import csv
 from nltk.tokenize import word_tokenize
 import math
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
+from src.data_access import *
 from setup import *
 
 tokenizer = RegexpTokenizer(r'\w+')
 
-
+# def get_lastdate_update():
+#
+#     file  = open(file_update,"r")
+#     date = file.read()
+#     print(date)
+#     file.close()
+#     return date
+#
+# def write_file_(date) :
+#     try:
+#         file = open(file_update,"w")
+#         file.write(str(date))
+#         file.close()
+#         print("Done !")
+#     except Exception as e :
+#         print(e)
 
 def load_model(file):
     start = time.time()
@@ -29,31 +44,36 @@ def norm (numbers) :
 
 
 def getData():
-    data=[]
-    data_postag = []
-    with open(file_path) as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            dict = {'id':str(row['newsId']) ,
-                    'title': str(row['title_token']).lower() ,
-                    "content":  str(row['sapo_token']).lower() + " " + str(row['content_token']).lower()}
-            data.append(dict)
+    news = get_news_update()
+    data =[]
+    # data_postag = []
+    # with open(file_path) as csvfile:
+    #     reader = csv.DictReader(csvfile)
+    for row in news:
+        dict = {
+                'id': str(row['news_id']),
+                'title': str(row['title_token']).lower(),
+                "content": str(row['sapo_token']).lower()
+                           + " " + str(row['content_token']).lower(),
+                'insertDate': row['insertDate'],
+                }
+        data.append(dict)
 
-            content_pos = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
-            content_postag = {}
-            word_tokens = word_tokenize(content_pos)
-            for word in word_tokens:
-                w = ''
-                postag = ''
-                for i in range(len(word)):
-                    if word[-i] == "/":
-                        w = word[-len(word):-i].lower()
-                        postag = word[-i + 1:]
-                        break
-                content_postag.update({w: postag})
-            data_postag.append({'id': str(row['newsId']), 'content_postag': content_postag})
+        # content_pos = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
+        # content_postag = {}
+        # word_tokens = word_tokenize(content_pos)
+        # for word in word_tokens:
+        #     w = ''
+        #     postag = ''
+        #     for i in range(len(word)):
+        #         if word[-i] == "/":
+        #             w = word[-len(word):-i].lower()
+        #             postag = word[-i + 1:]
+        #             break
+        #     content_postag.update({w: postag})
+        # data_postag.append({'id': str(row['news_id']), 'content_postag': content_postag})
 
-    return data ,data_postag
+    return data
 
 def load_stopwords_tfidf(file):
     stop_words = []
@@ -82,12 +102,13 @@ def get_corpus(doc_set,stop_words):
     return  texts
 
 
-def run_ngram(save_option= False ):
-    doc_set,data_pos = getData()
+def build_models(doc_set,file_save, save_option= False):
+    # doc_set = getData(date)
     stop_words = load_stopwords_tfidf(stoppath)
     texts = get_corpus(doc_set,stop_words)
 
-    model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),stop_words=stop_words,min_df=1)
+    model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),
+                            stop_words=stop_words,min_df=1)
     tfidf_matrix = model.fit_transform(texts)
     feature_names = model.get_feature_names()
     result = []
@@ -105,7 +126,7 @@ def run_ngram(save_option= False ):
         result.append(res)
 
     if save_option == True :
-        with open('../models/vectorizer_word.pk', 'wb') as f:
+        with open(file_save, 'wb') as f:
             pickle.dump(model, f)
 
 
@@ -114,7 +135,8 @@ def get_tf_idf(stop_words,contents, model ,feature_names) :
     # row = get_token(id)
     title = contents['title']
     content =contents['content']
-
+    norm_title = norm(len(title))
+    norm_content = norm(len(content))
     tokens = tokenizer.tokenize(title+" "+content)
     stopped_tokens = [word for word in tokens if not word in stop_words]
     string = ''
@@ -128,24 +150,13 @@ def get_tf_idf(stop_words,contents, model ,feature_names) :
     result = []
     for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
         if w in (title) :
-            result.append((w, s * norm(len(title))))
-        if ((w in content) and (w not in title) and (norm(len(content)) != 0)):
-            result.append((w, s * norm(len(content))))
+            result.append((w, s * norm_title))
+        if ((w in content) and (w not in title) and (norm(len(content)) > 0)):
+            result.append((w, s * norm_content))
 
     result.sort(key=lambda x: x[1], reverse=True)
 
 
     return result
 
-#
-if __name__=="__main__" :
-    start = time.time()
-    # model,feature_names = load_model(file_model)
-    run_ngram(save_option=True)
-#     # get_tf_idf(20180731122004553,model,feature_names)
-    print("--- %s seconds ---" % (time.time() - start))
-    # run()
-    # getData()
-    # load_postag()
-    # loadStopwords()
 

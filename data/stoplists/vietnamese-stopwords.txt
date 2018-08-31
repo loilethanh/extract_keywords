@@ -164,6 +164,7 @@ cao số
 cao thấp
 cao thế
 cao xa
+cực đại
 cha
 cha chả
 chao ôi
@@ -552,6 +553,7 @@ hay đâu
 hiểu
 hiện nay
 hiện tại
+hiện thời
 hoàn toàn
 hoặc
 hoặc là
@@ -582,7 +584,8 @@ hỏi xem
 hỏi xin
 hỗ trợ
 hôm nay
-hôm quas
+hôm qua
+hôm kia
 khi
 khi khác
 khi không
@@ -781,6 +784,7 @@ mà không
 mà lại
 mà thôi
 mà vẫn
+mã lực
 mình
 mạnh
 mất
@@ -867,6 +871,8 @@ nguồn
 nguồn tin
 ngày
 ngày càng
+ngày mai
+
 ngày cấp
 ngày giờ
 ngày ngày
@@ -1043,6 +1049,8 @@ nói đến
 nói đủ
 năm
 năm tháng
+năm nay
+năm ngoái
 nơi
 nơi nơi
 nước
@@ -1954,3 +1962,56 @@ yêu cầu
 ừ ào
 ừ ừ
 ử
+trưởng ban
+chi tiết
+chữ cái
+ý kiến
+gọi điện
+khỏi phải nói
+hàng loạt
+hàng đầu
+diện tích
+kết luận
+gió giật
+hành vi
+tỷ số
+hình thái
+phường
+phiên bản
+phương án
+vùng ven
+cực kì
+cực kỳ
+vô tình
+dẫn đầu
+xung quanh
+chiều
+thể loại
+chỉ số
+tổ hợp
+ngày nay
+da gà
+học hàm
+học vị
+giám đốc
+hạn mức
+hệ số
+liên hoan
+biên chế
+văn phòng
+tổng số
+lĩnh vực
+thủ tục
+quyết định
+hoàn cầu
+anh chàng
+cư dân
+mục tiêu
+nhu cầu
+ưu tiên
+chỉ tiêu
+biểu hiện
+số liệu
+dấu hiệu
+lực lượng
+tần suất
