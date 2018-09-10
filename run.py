@@ -26,13 +26,14 @@ def update_tags(id, results ) :
 
 
 if __name__ == '__main__' :
-    id = "201808020657441"
-    row = get_all(id)
-    print(row)
+    id = '20180909163018241'
+
+    row = get_all_content(id)
+
     model,feature_names = load_model(file_model)
-    # models,dict = load_model()
     stop_words = load_stopwords_tfidf(stoppath)
     start = time.time()
     results , contents = run_api(id,stop_words,model,feature_names)
+    print(row['tags'])
+
     # update_tags(id,results)
-    print("--- %s seconds ---" % (time.time() - start))

@@ -30,6 +30,7 @@ def insert_auto(date,stop_words,models,feature_names):
 
         for row in news:
             result = run_content(row, stop_words, models, feature_names)
+            # result = run_api(row['news_id'],stop_words, models, feature_names)
             string = ''
             for r in result:
                 string += r + ";"
@@ -42,8 +43,8 @@ def insert_auto(date,stop_words,models,feature_names):
                 string = str
             update_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             try:
-                print(row['news_id'], update_date, row['publishDate'], string)
-                insert(row['news_id'], update_date, row['publishDate'], string)
+                print(row['news_id'], update_date, row['insertDate'], string)
+                # insert(row['news_id'], update_date, row['publishDate'], string)
                 print("\n")
 
             except Exception as e:

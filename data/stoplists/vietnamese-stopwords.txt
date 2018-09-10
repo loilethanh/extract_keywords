@@ -872,7 +872,6 @@ nguồn tin
 ngày
 ngày càng
 ngày mai
-
 ngày cấp
 ngày giờ
 ngày ngày
@@ -1973,12 +1972,9 @@ hàng đầu
 diện tích
 kết luận
 gió giật
-hành vi
-tỷ số
 hình thái
 phường
 phiên bản
-phương án
 vùng ven
 cực kì
 cực kỳ
@@ -1990,28 +1986,38 @@ thể loại
 chỉ số
 tổ hợp
 ngày nay
-da gà
 học hàm
 học vị
-giám đốc
 hạn mức
 hệ số
 liên hoan
 biên chế
-văn phòng
 tổng số
-lĩnh vực
 thủ tục
 quyết định
 hoàn cầu
-anh chàng
-cư dân
 mục tiêu
 nhu cầu
 ưu tiên
 chỉ tiêu
 biểu hiện
 số liệu
-dấu hiệu
 lực lượng
 tần suất
+thực chất
+nguy cơ
+chức năng
+chế độ
+phân cảnh
+diễn biến
+nội dung
+yếu tố
+tỷ lệ
+nguyên nhân
+trường hợp
+đại diện
+thế hệ
+ban đầu
+kẻ
+đi
+

@@ -108,7 +108,7 @@ def build_models(doc_set,file_save, save_option= False):
     texts = get_corpus(doc_set,stop_words)
 
     model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),
-                            stop_words=stop_words,min_df=1)
+                            stop_words=stop_words,min_df=1,)
     tfidf_matrix = model.fit_transform(texts)
     feature_names = model.get_feature_names()
     result = []

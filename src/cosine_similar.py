@@ -8,47 +8,61 @@ from setup import *
 def get_all_tfidf(models,candidate_news):
     results = {}
     list_id = []
-    for cn in candidate_news :
-        list_id.append(cn['newsId'])
+    # for cn in candidate_news :
+    #     list_id.append(cn['newsId'])
 
-    list_contents = get_news_list(list_id)
-    for row in list_contents :
+    # list_contents = get_news_list(list_id)
+    # list_contents = ''
+    print("lenght of candidate_news : ", len(candidate_news))
+    for row in candidate_news :
         title =row['title_token'].lower()
         content = row['sapo_token'].lower() + " " + row['content_token'].lower()
-        tfidf = models.transform([title+" "+content])
+        tfidf = models.transform([title + " " + content])
         results.update({row['news_id']:tfidf})
+    return results
 
-    return results,list_contents
 
-def get_news_tags(aid,stop_words, model, feature_name,candidate_news,candidate_news_tfidf,list_contents):
-    tags_news,contents  = run_api(aid,stop_words, model, feature_name)
+def get_news_tags(aid,model,candidate_news,candidate_news_tfidf):
+    # tags_news,contents  = run_api(aid,stop_words, model, feature_name)
+    start = time.time()
+    contents = get_all_content(aid)
+    tags = contents['tags'].lower().split(";")[:-1]
+    tfidf = model.transform([contents['title_token'].lower()
+                             + " " + contents['sapo_token'].lower()
+                             + " " + contents['content_token'].lower()])
+    print("tags :",tags)
     news=[]
     for i  in range(len(candidate_news)) :
-        news_tag = candidate_news[i]['tags']
+        news_tag = candidate_news[i]['tags'].lower().split(";")[:-1]
         result = {}
-        intersect = [t for t in tags_news if t in news_tag]
-        if len(intersect) > 0 and str(aid) != str(candidate_news[i]['newsId']):
-            tfidf = candidate_news_tfidf[candidate_news[i]['newsId']]
-            result.update({"id": candidate_news[i]['newsId'], "keyword_join": intersect,'tfidf':tfidf,
-                           "title":list_contents[i]['title'],"url":list_contents[i]['url']})
+        intersect = [t for t in tags if t in news_tag]
+        if len(intersect) > 0 and str(aid) != str(candidate_news[i]['news_id']):
+            tfidf = candidate_news_tfidf[candidate_news[i]['news_id']]
+            result.update({"id": candidate_news[i]['news_id'], "keyword_join": intersect,'tfidf':tfidf,
+                           "title":candidate_news[i]['title'],"url":candidate_news[i]['url']})
             news.append(result)
-    return news,contents
+    print("time for get tags of news intersect with id : ", time.time() - start)
+    return news,tfidf
 
 
-def get_news_similar_score(id,stop_words, model, feature_name,candidate_news,candidate_news_tfidf,list_contents):
+def get_news_similar_score(id,model,candidate_news,candidate_news_tfidf):
 
-    news,contents = get_news_tags(id,stop_words, model, feature_name,candidate_news,candidate_news_tfidf,list_contents)
+    news,tfidf = get_news_tags(id,model, candidate_news,candidate_news_tfidf)
+    print("lenght of news intersect tags :", len(news))
+    start = time.time()
     result = []
-
     if len(news) != 0:
-
-        tfidf = model.transform([contents['title']+contents['content']])
-        for doc in news:
-            tf_idf = doc['tfidf']
+        # tfidf = model.transform([contents['title_token'].lower()
+        #                          +" "+contents['sapo_token'].lower()
+        #                          +" "+contents['content_token'].lower()])
+        for row in news:
+            tf_idf = row['tfidf']
             cosine = cosine_similarity(tfidf, tf_idf)
-            result.append((doc['id'],cosine[0][0],doc['keyword_join'], doc['title'], doc['url']))
+            result.append((row['id'],cosine[0][0],row['keyword_join'],
+                           row['title'], row['url']))
             #
             result.sort(key=lambda x: x[1], reverse=True)
+    print("time for get similar score : " , time.time() - start)
     return result
 
 
