@@ -44,7 +44,7 @@ def insert_auto(date,stop_words,models,feature_names):
             update_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             try:
                 print(row['news_id'], update_date, row['insertDate'], string)
-                # insert(row['news_id'], update_date, row['publishDate'], string)
+                insert(row['news_id'], update_date, row['publishDate'], string)
                 print("\n")
 
             except Exception as e:
