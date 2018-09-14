@@ -103,7 +103,7 @@ def check_tag_postag(tag_pos,tag_token, content):
                 if w in token and tokenizer.strip() not in result \
                         and tokenizer.strip().lower().replace("_"," ") in content.replace("_"," "):
                     result.append(tokenizer.strip())
-
+    
     print("tag", result)
     return  result
 
@@ -179,10 +179,10 @@ def run_api(id,stop_words,model,feature_name) :
     keys = run_rake(cont, contents['content_PoS'],min_freq)
     print("gen_keys_2:",len(keys), keys)
 
-    if len(keys) < 3:
-        min_freq = 1
-        keys = run_rake(cont, contents['content_PoS'], min_freq)
-        print("gen_keys_1:", keys)
+    # if len(keys) < 3:
+    #     min_freq = 2
+    #     keys = run_rake(cont, contents['content_PoS'], min_freq)
+    #     print("gen_keys_1:", keys)
 
     if keys != None :
         tf_idf = get_tfidf_(stop_words,contents, model, feature_name )
