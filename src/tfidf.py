@@ -11,7 +11,6 @@ from setup import *
 tokenizer = RegexpTokenizer(r'\w+')
 
 
-
 def load_model(file):
     start = time.time()
     with open(file, 'rb') as f:
@@ -31,9 +30,6 @@ def norm (numbers) :
 def getData():
     news = get_news_update()
     data =[]
-    # data_postag = []
-    # with open(file_path) as csvfile:
-    #     reader = csv.DictReader(csvfile)
     for row in news:
         dict = {
                 'id': str(row['news_id']),
@@ -43,8 +39,8 @@ def getData():
                 'insertDate': row['insertDate'],
                 }
         data.append(dict)
-
     return data
+
 
 def load_stopwords_tfidf(file):
     stop_words = []
@@ -79,7 +75,7 @@ def build_models(doc_set,file_save, save_option= False):
     texts = get_corpus(doc_set,stop_words)
 
     model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),
-                            stop_words=stop_words,min_df= 3 , max_df = 0.01,)
+             stop_words=stop_words,min_df= 3 , max_df = 0.01,)
 
     tfidf_matrix = model.fit_transform(texts)
     feature_names = model.get_feature_names()
@@ -106,10 +102,10 @@ def get_tf_idf(stop_words,contents, model ,feature_names) :
 
     # row = get_token(id)
     title = contents['title']
-    content =contents['content']
+    content = contents['content']
     norm_title = norm(len(title))
     norm_content = norm(len(content))
-    tokens = tokenizer.tokenize(title+" "+content)
+    tokens = tokenizer.tokenize(title +" "+content)
     stopped_tokens = [word for word in tokens if not word in stop_words]
     string = ''
     for word in stopped_tokens:

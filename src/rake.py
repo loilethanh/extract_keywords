@@ -249,7 +249,6 @@ def calculate_word_scores(phraseList):
     # word_score[item] = word_frequency[item]/(word_degree[item] * 1.0) #exp.
     return word_score
 
-
 def generate_candidate_keyword_scores(phrase_list, word_score, min_keyword_frequency=1):
     keyword_candidates = {}
     for phrase in phrase_list:

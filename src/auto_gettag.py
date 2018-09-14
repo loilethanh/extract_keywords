@@ -30,7 +30,9 @@ def insert_auto(date,stop_words,models,feature_names):
 
         for row in news:
             # result = run_content(row, stop_words, models, feature_names)
-            result,c = run_api(row['news_id'],stop_words, models, feature_names)
+
+            result,contents = run_api(row['news_id'],stop_words, models, feature_names)
+
             string = ''
             for r in result:
                 string += r + ";"

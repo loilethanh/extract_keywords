@@ -99,11 +99,11 @@ def check_tag_postag(tag_pos,tag_token, content):
             # print(w,postag)
             for tokenizer in tokenizer_tag:
                 token = tokenizer.split(" ")
-                if w in token and tokenizer.strip() not in result \
-                        and tokenizer.lower().replace("_"," ") in content.replace("_"," "):
+                if w in token and tokenizer.strip() not in result and tokenizer.lower().replace("_"," ") in content.replace("_"," "):
                     result.append(tokenizer.strip())
 
     # print("tag", result)
+
     return  result
 
 
@@ -224,75 +224,6 @@ def run_api(id,stop_words,model,feature_name) :
     return  result , contents
 
 
-# def run_content(row,stop_words,model,feature_name) :
-#     min_freq = 2
-#     result = []
-#
-#     contents = {}
-#     title = (row['title_token'])
-#     # title = ViTokenizer.tokenize(row['title_token'])
-#     link = row['url']
-#     content = row['sapo_token'].lower() + " " + row['content_token'].lower()
-#     # content = ViTokenizer.tokenize(row['sapo_token'] + " " +row['content_token'])
-#
-#     tag_pos = row["tag_postag"]
-#
-#     tag_token = ""
-#     if row['tag_token'] != None:
-#         tag_token = (row['tag_token'])
-#
-#     content_PoS = str(row['title_postag']) + " " + str(row['sapo_postag']) + \
-#                   " " + str(row['content_postag'])
-#     # content_PoS = gen_pos(title+" "+content)
-#     contents.update({"title": title.lower(), "link": link, "content": content.lower(),
-#                    "tag_pos": tag_pos, "tag_token": tag_token, "content_PoS": content_PoS})
-#
-#     cont = contents['title'] + " " + contents['content']
-#     keys = run_rake(cont, contents['content_PoS'], min_freq)
-#     print("gen_keys_2:", len(keys), keys)
-#
-#     if len(keys) < 3:
-#         min_freq = 1
-#         keys = run_rake(cont, contents['content_PoS'], min_freq)
-#         print("gen_keys_1:", keys)
-#
-#     if keys != None:
-#         tf_idf = get_tfidf_(stop_words, contents, model, feature_name)
-#         for i in range(len(keys)):
-#             w = keys.__getitem__(i)
-#             print(w)
-#             for j in range(len(tf_idf)):
-#                 sub = tf_idf[j].split(":")
-#                 if w[0] == sub[0]:
-#                     print(sub[1])
-#                     result.append((w[0], float(w[1]) * float(sub[1])))
-#             print("\n")
-#         result.sort(key=lambda x: x[1], reverse=True)
-#
-#     tag_news = []
-#     if (contents['tag_pos'] != None and contents['tag_token'] != None):
-#         tag_news = check_tag_postag(contents['tag_pos'], contents['tag_token'], contents['content'])
-#
-#     result = check_keyword(result, contents['content_PoS'])
-#
-#     if len(tag_news) == 0 and len(result) < 3 and contents['tag_token'] != None:
-#         tag_news = check_tag(contents['tag_token'], cont)
-#
-#     check = [tg for tg in tag_news if tg not in result]
-#
-#     check_intersect = []
-#     for re in result:
-#         for tg in check:
-#             if re.replace("_", " ") in tg.lower().replace("_", " "):
-#                 check_intersect.append(re)
-#                 break
-#     print("intersect :", check_intersect)
-#     result = [re for re in result if re not in check_intersect]
-#     print("check", check)
-#     result = check + result
-#     print("result ", result)
-#
-#     return  result
 
 
 
