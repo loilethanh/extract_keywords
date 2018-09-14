@@ -1,19 +1,18 @@
-# import gensim.downloader as api
-# from gensim.models import TfidfModel
-# from gensim.corpora import Dictionary
-# from gensim import  corpora
-# from nltk.util import ngrams
-# from src.tfidf import *
-# from setup import *
-# from src.tfidf_v2 import *
-# import datetime
-# from datetime import timedelta
-# from src.auto_gettag import *
-# from src.auto_gettag import *
-#
-#
-# # #
-# if __name__ == '__main__':
+import gensim.downloader as api
+from gensim.models import TfidfModel
+from gensim.corpora import Dictionary
+from gensim import  corpora
+from nltk.util import ngrams
+from src.tfidf import *
+from setup import *
+import datetime
+from datetime import timedelta
+from src.auto_gettag import *
+from src.auto_gettag import *
+
+
+# #
+if __name__ == '__main__':
 # #
 #     # date_ = get_lastday_file(file_update)
 #     doc_set = getData()
@@ -50,4 +49,7 @@
 # #     #     # print("time to get : ",time.time() - start)
 # #     #     # print(results)
 # #         time.sleep(1)
-# #         print("========================end=========================")
+#         print("========================end=========================")
+    doc_set = getData()
+    print("lenght : ", len(doc_set))
+    build_models(doc_set, file_model, True)

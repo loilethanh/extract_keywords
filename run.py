@@ -1,8 +1,8 @@
 from src.rake_run import *
 from setup import  *
 from src.data_access import *
-from src.tfidf_v2 import *
 from src.tfidf import *
+from collections import Counter
 
 def update_tags(id, results ) :
     string = ''
@@ -26,14 +26,14 @@ def update_tags(id, results ) :
 
 
 if __name__ == '__main__' :
-    id = '20180909163018241'
+    id = '20180913151840025'
 
     row = get_all_content(id)
-
     model,feature_names = load_model(file_model)
     stop_words = load_stopwords_tfidf(stoppath)
-    start = time.time()
+
     results , contents = run_api(id,stop_words,model,feature_names)
     print(row['tags'])
 
     # update_tags(id,results)
+

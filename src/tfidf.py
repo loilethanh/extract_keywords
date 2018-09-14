@@ -10,22 +10,7 @@ from setup import *
 
 tokenizer = RegexpTokenizer(r'\w+')
 
-# def get_lastdate_update():
-#
-#     file  = open(file_update,"r")
-#     date = file.read()
-#     print(date)
-#     file.close()
-#     return date
-#
-# def write_file_(date) :
-#     try:
-#         file = open(file_update,"w")
-#         file.write(str(date))
-#         file.close()
-#         print("Done !")
-#     except Exception as e :
-#         print(e)
+
 
 def load_model(file):
     start = time.time()
@@ -59,20 +44,6 @@ def getData():
                 }
         data.append(dict)
 
-        # content_pos = str(row['title_postag']) + " " + str(row['sapo_postag']) + " " + str(row['content_postag'])
-        # content_postag = {}
-        # word_tokens = word_tokenize(content_pos)
-        # for word in word_tokens:
-        #     w = ''
-        #     postag = ''
-        #     for i in range(len(word)):
-        #         if word[-i] == "/":
-        #             w = word[-len(word):-i].lower()
-        #             postag = word[-i + 1:]
-        #             break
-        #     content_postag.update({w: postag})
-        # data_postag.append({'id': str(row['news_id']), 'content_postag': content_postag})
-
     return data
 
 def load_stopwords_tfidf(file):
@@ -97,7 +68,7 @@ def get_corpus(doc_set,stop_words):
         stopped_tokens= [word for word in tokens if not word in stop_words]
         string = ''
         for word in stopped_tokens:
-            string +=word+" "
+            string += word + " "
         texts.append(string)
     return  texts
 
@@ -108,7 +79,8 @@ def build_models(doc_set,file_save, save_option= False):
     texts = get_corpus(doc_set,stop_words)
 
     model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),
-                            stop_words=stop_words,min_df=1,)
+                            stop_words=stop_words,min_df= 3 , max_df = 0.01,)
+
     tfidf_matrix = model.fit_transform(texts)
     feature_names = model.get_feature_names()
     result = []
@@ -118,7 +90,7 @@ def build_models(doc_set,file_save, save_option= False):
         tfidf_scores = zip(feature_index, [tfidf_matrix[index, x] for x in feature_index])
         res = []
         for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
-            if (w in doc_set[index]['title']  ):
+            if ( w in doc_set[index]['title'] ):
                 res.append((str(w), s * norm(len(doc_set[index]['title']))))
             if ((w in doc_set[index]['content']) and (w not in doc_set[index]['title'] ) and(norm(len(doc_set[index]['content'])) != 0 )):
                 res.append((str(w), s * norm(len(doc_set[index]['content']))))

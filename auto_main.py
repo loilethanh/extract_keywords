@@ -1,8 +1,6 @@
 from src.auto_gettag import *
 from src.data_access import *
-# from src.tfidf_v2 import *
 from src.tfidf import *
-# from tfidf_run import *
 from datetime import timedelta
 
 
@@ -16,7 +14,7 @@ if __name__ == '__main__':
     while True:
         date_update = get_lastday_file(file_update)
         now = datetime.datetime.now()
-        ob = datetime.datetime.strptime(date_update, '%Y-%m-%d %H:%M:%S') + timedelta(days=3)
+        ob = datetime.datetime.strptime(date_update, '%Y-%m-%d %H:%M:%S') + timedelta(days=2)
         print(ob)
         # Last_date for get news auto generate tags
         date = get_lastday_file(file_lastdate)

@@ -17,7 +17,7 @@ PoS = ['Nu', 'L', 'Ny', "C", "Cc", "T", 'X', "E", 'Z', 'A', 'R', 'M']
 PoS_v2 = ['Nu', 'L', 'Ny', "C", "Cc", "T", 'X', "E", 'R', 'Z', 'A', ]
 
 check_pos = ['Nu','L','Ny',"C","Cc","T",'X',"E",'R','Z','M',"V",'P','A','Nc','Nb',
-             'VV','NV','VN','NpV','VVb','VA','AA',
+             'VV','NV','VN','NpV','VVb','VA','AA','NP',
              'NNV']
 
 check_pos_word = ['Z','N','Nu','Nc','M','R','V','A']
