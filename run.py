@@ -29,7 +29,6 @@ if __name__ == '__main__' :
 
     id = '2018091317064979'
 
-
     row = get_all_content(id)
     model,feature_names = load_model(file_model)
     print("leng feature_name : ", len(feature_names))
