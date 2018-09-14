@@ -1,8 +1,6 @@
 from src.auto_gettag import *
 from src.data_access import *
-# from src.tfidf_v2 import *
 from src.tfidf import *
-# from tfidf_run import *
 from datetime import timedelta
 
 

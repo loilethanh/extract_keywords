@@ -96,7 +96,7 @@ def split_sentences(text):
     Utility function to return a list of sentences.
     @param text The text that must be split in to sentences.
     """
-    sentence_delimiters = re.compile(u'[\\[\\]\n.!?,;:\t\\-\\"\\(\\)\\\'\u2019\u2013]')
+    sentence_delimiters = re.compile(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s')
     sentences = sentence_delimiters.split(text)
     return sentences
 
@@ -248,7 +248,6 @@ def calculate_word_scores(phraseList):
         word_score[item] = word_degree[item] / (word_frequency[item] * 1.0)  # orig.
     # word_score[item] = word_frequency[item]/(word_degree[item] * 1.0) #exp.
     return word_score
-
 
 def generate_candidate_keyword_scores(phrase_list, word_score, min_keyword_frequency=1):
     keyword_candidates = {}
