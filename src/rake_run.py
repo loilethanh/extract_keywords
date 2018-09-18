@@ -41,7 +41,6 @@ def get_content(aid):
     :param aid:
     :return:
     """
-    # start = time.time()
 
     result ={}
     row = get_new(aid)
@@ -64,26 +63,23 @@ def get_content(aid):
     result.update({"title":title.lower(),"link":link,"content":content.lower(),
                    "tag_pos":tag_pos,"tag_token":tag_token,"content_PoS":content_PoS})
 
-    # print("time get content %s ", time.time() - start)
     return result
 
 
 def get_tfidf_(stop_words,contents, model,feature_names) :
-    # start = time.time()
     word_tfidf = []
     tfidf = get_tf_idf(stop_words ,contents,model,feature_names)
     for d in tfidf :
         word_tfidf.append(str(d[0]) + ":" + str(d[1]))
-    # print("time get tfidf %s ", time.time() - start)
     return word_tfidf
 
 
-def check_tag_postag(tag_pos,tag_token, content):
+def check_tag_postag(tag_pos,tag_token, contents):
     """ check tag in the content of news """
-
+    cont = contents['title'] + " " + contents['content']
     tags_pos = tag_pos.split(" ")
     tokenizer_tag = tag_token.split(";")
-    tokens = word_tokenize(content)
+    tokens = word_tokenize(cont)
     result = []
 
     for t in tags_pos:
@@ -96,14 +92,18 @@ def check_tag_postag(tag_pos,tag_token, content):
                 break
         if (postag in PoS_tag and w.lower() in tokens):
 
-            # print(w,postag)
+            print(w,postag)
             for tokenizer in tokenizer_tag:
                 token = tokenizer.split(" ")
-                if w in token and tokenizer.strip() not in result and tokenizer.lower().replace("_"," ") in content.replace("_"," "):
+                if w in token and tokenizer.strip() not in result and tokenizer.lower().replace("_"," ") in cont.replace("_"," "):
                     result.append(tokenizer.strip())
+    print("result :",result)
+    for tag in tokenizer_tag :
+        if tag.lower().strip() in contents['title'].lower().strip() and tag.strip() not in result :
+            print("tag in title : ",tag)
+            result.append(tag)
 
-    # print("tag", result)
-
+    print("tag of news", result)
     return  result
 
 
@@ -120,7 +120,7 @@ def check_tag(tag_token, content) :
         if tg.strip().lower().replace("_"," ") not in content.strip().replace("_"," ") :
             remove.append(tg)
     result = [tg for tg in tag if tg not in remove]
-    # print("check tag" , result)
+    print("check tag" , result)
     return result
 
 
@@ -134,7 +134,7 @@ def check_keyword(result,content_PoS):
     tags_remove = []
     for r in result :
         tags.append(r[0].strip())
-    # print("keyword_sort ",len(tags) ,tags)
+    print("keyword_sort ",len(tags) ,tags)
 
     for i in range(len(tags)) :
         token = tags[i].split(" ")
@@ -142,30 +142,42 @@ def check_keyword(result,content_PoS):
             if len(token[0]) < 6 :
                 tags_remove.append(token[0])
             PoS = data_pos.get(token[0])
-            # print(i," ",token," ",PoS)
-            #
+            print(i," ",token," ",PoS)
+
             if PoS in check_pos_word :
-                # print("----------remove---------", tags[i], PoS)
+                print("----------remove---------", tags[i], PoS)
                 tags_remove.append(token[0])
         else :
-            # print(i, " ", token)
+            print(i, " ", token)
             PoS = ''
             for w in token:
                 if (data_pos.get(w)):
-                    # print(w, data_pos.get(w))
+                    print(w, data_pos.get(w))
                     PoS += data_pos.get(w)
-            # print(tags[i], PoS)
+            print(tags[i], PoS)
             if (PoS in check_pos):
-                # print("----------remove---------", tags[i], PoS)
+                print("----------remove---------", tags[i], PoS)
                 tags_remove.append(tags[i])
 
     tags_final =[tg for tg in tags if tg not in tags_remove]
-    # print("remove :",len(tags_remove),"----- keyword :",len(tags_final),tags_final)
+    print("remove :",len(tags_remove),"----- keyword :",len(tags_final),tags_final)
+
+    temp = []
+
+    for tag in tags_final :
+        token = tag.split(" ")
+        for word in token :
+            if data_pos.get(word) in PoS_tag :
+                temp.append(tag)
+                break
+
+    tag_final = [tag for tag in tags_final if tag not in temp]
+    tags_final  = temp[:3] + tag_final
+
     if len(result) >= threshold :
         thr = threshold
     else: thr = len(result)
     tags_final = tags_final[:thr]
-
     return tags_final
 
 
@@ -176,7 +188,7 @@ def run_api(id,stop_words,model,feature_name) :
     contents = get_content(id)
     cont = contents['title']+" "+contents['content']
     keys = run_rake(cont, contents['content_PoS'],min_freq)
-    # print("gen_keys_2:",len(keys), keys)
+    print("gen_keys_2:",len(keys), keys)
 
     # if len(keys) < 3:
     #     min_freq = 2
@@ -187,18 +199,18 @@ def run_api(id,stop_words,model,feature_name) :
         tf_idf = get_tfidf_(stop_words,contents, model, feature_name )
         for i in range(len(keys)):
             w = keys.__getitem__(i)
-            # print(w)
+            print(w)
             for j in range(len(tf_idf)):
                 sub = tf_idf[j].split(":")
                 if w[0] == sub[0]:
-                    # print(sub[1])
+                    print(sub[1])
                     result.append((w[0], float(w[1]) * float(sub[1])))
-            # print("\n")
+            print("\n")
         result.sort(key=lambda x: x[1], reverse=True)
 
     tag_news = []
     if (contents['tag_pos'] != None and contents['tag_token'] != None):
-        tag_news = check_tag_postag(contents['tag_pos'],contents['tag_token'], cont)
+        tag_news = check_tag_postag(contents['tag_pos'],contents['tag_token'], contents)
 
 
     result = check_keyword(result, contents['content_PoS'])
@@ -207,7 +219,7 @@ def run_api(id,stop_words,model,feature_name) :
         tag_news = check_tag(contents['tag_token'], cont)
 
 
-    check = [tg for tg in tag_news if tg not in result]
+    check = [tg.lower().strip() for tg in tag_news if tg not in result]
 
     check_intersect = []
     for re in result :
@@ -215,11 +227,12 @@ def run_api(id,stop_words,model,feature_name) :
             if re.replace("_", " ") in tg.lower().replace("_", " "):
                 check_intersect.append(re)
                 break
-    # print("intersect :",check_intersect)
+
+    print("intersect :",check_intersect)
     result =[re for re in result if re not in check_intersect]
-    # print("check", check)
+    print("check", check)
     result = check + result
-    # print("result ", result)
+    print("result ", result)
 
     return  result , contents
 

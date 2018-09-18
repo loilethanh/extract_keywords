@@ -35,7 +35,7 @@ def getnew(id):
     start = time.time()
     news = get_news_similar_score(id, models,candidate_news,candidate_news_tfidf)
     print("time for get all news : ", time.time() - start)
-    return jsonify({"news" :news,"time ": time.time() - start })
+    return jsonify({"news" :news,"lenght":len(news),"time ": time.time() - start })
 
 
 if __name__ == "__main__":

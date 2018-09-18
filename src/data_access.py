@@ -92,7 +92,7 @@ def get_news_update():
             " INNER JOIN recsys.news_token ON  news.news_resource.newsId = recsys.news_token.news_id" \
             " WHERE news.news_resource.insertDate >= NOW() - INTERVAL 60 DAY AND  news.news_resource.insertDate < NOW()" \
             " ORDER BY news.news_resource.insertDate " \
-            " LIMIT 100"
+            " "
 
     print(query)
     conn = None

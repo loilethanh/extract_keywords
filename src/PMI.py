@@ -41,18 +41,7 @@ def pmi_numerator(count , term1, term2):
     return (1.0 * N * fre_term)
 
 
-if __name__ == '__main__':
-    # str = "viet nam 2018 khac viet nam nam 2010"
-    # data = word_grams(str.split(" "))
-    # wordcount = Counter(data)
-    # print(len(wordcount))
-    # with open("count.pkl",'wb') as file :
-    #     pickle.dump(wordcount,file)
 
-    with open("count.pkl",'rb') as file :
-        abc = pickle.load(file)
-
-    print(pmi_1word(abc,"viet"))
 
 
 

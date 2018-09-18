@@ -7,7 +7,8 @@ file_update = "data/last_update.txt"
 # stoppath = "data/stoplists/stopwords.txt"
 
 stoppath = "data/stoplists/vietnamese-stopwords.txt"
-file_model = 'models/vectorizer_v2.pk'
+file_model = 'models/vectorizer.pk'
+model_pmi = "models/count.pk"
 # file_model_test = 'models/vectorizer_test.pk'
 # model_tfidf_file = "models/models.tfidf"
 # dictionary_file ="models/tfidf.dict"

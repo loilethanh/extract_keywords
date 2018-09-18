@@ -27,7 +27,7 @@ def update_tags(id, results ) :
 
 if __name__ == '__main__' :
 
-    id = '2018091317064979'
+    id = '20180917235943454'
 
     row = get_all_content(id)
     model,feature_names = load_model(file_model)
@@ -38,4 +38,3 @@ if __name__ == '__main__' :
     print(row['tags'])
 
     # update_tags(id,results)
-

@@ -2,6 +2,7 @@ import time
 from nltk.tokenize import RegexpTokenizer
 import csv
 from nltk.tokenize import word_tokenize
+from nltk.util import ngrams
 import math
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
@@ -25,6 +26,14 @@ def load_model(file):
 def norm (numbers) :
     a = math.sqrt(numbers)
     return 1.0/a
+
+
+def word_grams(words, min=1, max=3):
+    results = []
+    for n in range(min, max+1):
+        for ngram in ngrams(words, n):
+            results.append(' '.join(str(i) for i in ngram))
+    return results
 
 
 def getData():
@@ -70,12 +79,12 @@ def get_corpus(doc_set,stop_words):
 
 
 def build_models(doc_set,file_save, save_option= False):
-    # doc_set = getData(date)
     stop_words = load_stopwords_tfidf(stoppath)
     texts = get_corpus(doc_set,stop_words)
 
     model = TfidfVectorizer(analyzer='word', ngram_range=(1,3),
-             stop_words=stop_words,min_df= 3 , max_df = 0.01,)
+             stop_words =stop_words,min_df= 5 , max_df = 0.01,)
+
 
     tfidf_matrix = model.fit_transform(texts)
     feature_names = model.get_feature_names()
@@ -86,10 +95,14 @@ def build_models(doc_set,file_save, save_option= False):
         tfidf_scores = zip(feature_index, [tfidf_matrix[index, x] for x in feature_index])
         res = []
         for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
+
             if ( w in doc_set[index]['title'] ):
                 res.append((str(w), s * norm(len(doc_set[index]['title']))))
-            if ((w in doc_set[index]['content']) and (w not in doc_set[index]['title'] ) and(norm(len(doc_set[index]['content'])) != 0 )):
+
+            if ((w in doc_set[index]['content']) and (w not in doc_set[index]['title'] )
+                    and(norm(len(doc_set[index]['content'])) != 0 )):
                 res.append((str(w), s * norm(len(doc_set[index]['content']))))
+
         res.sort(key=lambda x: x[1], reverse=True)
         result.append(res)
 
